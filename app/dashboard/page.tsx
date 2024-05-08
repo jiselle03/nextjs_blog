@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import { IoHome } from "react-icons/io5";
 import { IoSettings } from "react-icons/io5";
+import BlogPost from '@/components/blog-post';
 
-export default function Dashboard() {
+const Dashboard = () => {
   return (
-    <div className="flex flex-row min-h-screen justify-between p-24">
+    <div className="flex flex-row min-h-screen justify-between p-24 divide-x divide-gray-300">
       {/* Navbar */}
       <nav className="w-1/4 p-4">
         <ul>
@@ -31,8 +32,17 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <div className="flex-grow p-4">
-        Dashboard here
+        {[...Array(4)].map((_, i) => (
+          <BlogPost
+            key={i}
+            num={i + 1}
+          />
+        ))}
       </div>
+
+      <div className="w-1/4 p-4"></div>
     </div>
   );
 }
+
+export default Dashboard;
