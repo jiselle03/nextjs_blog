@@ -35,6 +35,7 @@ const Dashboard = () => {
         {[...Array(4)].map((_, i) => (
           <BlogPost
             key={i}
+            username={`username ${i + 1}`}
             num={i + 1}
           />
         ))}
