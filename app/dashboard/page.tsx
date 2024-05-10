@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import { IoHome } from "react-icons/io5";
-import { IoSettings } from "react-icons/io5";
+import { IoHome, IoSettings } from "react-icons/io5";
 import BlogPost from '@/components/blog-post';
 
 const Dashboard = () => {
@@ -44,6 +43,6 @@ const Dashboard = () => {
       <div className="w-1/4 p-4"></div>
     </div>
   );
-}
+};
 
 export default Dashboard;
