@@ -30,11 +30,11 @@ const BlogPost = ({ username, num }: Props) => {
         Blog post {num}
       </div>
       <div className="pt-4 flex justify-end items-center gap-1.5">
-        <IoSend className="cursor-pointer h-6 w-6" />
+        <IoSend className="cursor-pointer h-5 w-5" />
         {liked ? (
-          <IoHeart onClick={toggleLike} className="cursor-pointer text-red-500 h-6 w-6" />
+          <IoHeart onClick={toggleLike} className="cursor-pointer text-red-500 h-5 w-5" />
         ) : (
-          <IoHeartOutline onClick={toggleLike} className="cursor-pointer h-6 w-6" />
+          <IoHeartOutline onClick={toggleLike} className="cursor-pointer h-5 w-5" />
         )}
       </div>
     </div>

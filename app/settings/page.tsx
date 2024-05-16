@@ -1,11 +1,9 @@
-'use client';
-
-import { useState } from 'react';
-import { IoSearch } from "react-icons/io5";
+import { IoPencil } from "react-icons/io5";
 import NavBar from '@/components/nav-bar';
+import SearchBar from '@/components/search-bar';
 
 const Dashboard = () => {
-  const [isFocused, setIsFocused] = useState(false);
+  const items = ['Email', 'Password', 'Language']
 
   return (
     <div className="flex flex-row min-h-screen justify-between p-24 divide-x divide-gray-300">
@@ -14,24 +12,27 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="flex-grow p-4">
-        
+        <div className="bg-white p-4 border rounded">
+          <h2 className="pb-6 border-b-2 border-gray-300 text-xl font-semibold">Account</h2>
+          <div className="divide-y divide-gray-300">
+            {
+              items.map(item => (
+                <div
+                  key={item}
+                  className="py-4 flex justify-between items-center"
+                >
+                  <h3 className="w-36 font-medium">{item}</h3>
+                  <p className="flex-grow">Text</p>
+                  <IoPencil className="cursor-pointer text-gray-500 h-5 w-5" />
+                </div>
+              ))
+            }
+          </div>
+        </div>
       </div>
 
       {/* Right panel */}
-      <div className="relative w-1/4 p-4">
-        <IoSearch
-          className={`absolute h-6 w-6 text-gray-300 inset-6 left-6 text-gray-${isFocused ? '800' : '300'}`}
-        />
-        <input
-          type="text"
-          placeholder="Search Blogr"
-          id="search"
-          name="search"
-          className="border border-gray-300 rounded p-2 pl-10 outline-0 placeholder-gray-300 text-gray-300 focus:text-gray-800 bg-zinc-100 focus:bg-white"
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-        />
-      </div>
+      <SearchBar />
     </div>
   );
 };
