@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { IoHome, IoSettings } from "react-icons/io5";
+import { IoHome, IoSettings, IoAddSharp } from "react-icons/io5";
 
 const NavBar = () => {
   const pathname = usePathname();
@@ -19,7 +19,7 @@ const NavBar = () => {
 
   return (
     <nav className="w-1/4 p-4">
-      <ul>
+      <ul className="border-b-2 border-gray-300 pb-4">
         {navItems.map(item => (
           <li
             key={item.title}
@@ -35,6 +35,13 @@ const NavBar = () => {
           </li>
         ))}
       </ul>
+      <Link
+        href="/new"
+        className="pt-4 p-2 flex items-center gap-1.5 text-gray-800"
+      >
+        <IoAddSharp />
+        New
+      </Link>
     </nav>
   );
 };
