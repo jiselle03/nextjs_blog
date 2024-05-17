@@ -20,6 +20,27 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## Database setup with Prisma
+
+Install postgresql. 
+
+install Prisma globally:
+```bash
+npm install -g prisma
+```
+
+Initialize Prisma in your project:
+```bash
+prisma init
+```
+Configure Prisma to use your database. Update the schema.prisma file with your database connection details.
+
+Set up environment variables:
+Create a .env file in the root directory and add the following
+```bash
+DATABASE_URL="postgresql://database_username:database_password@localhost:5432/datebase_name?schema=public"
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
