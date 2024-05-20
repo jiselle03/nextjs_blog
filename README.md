@@ -35,6 +35,11 @@ Create a .env file in the root directory and add the following
 DATABASE_URL="postgresql://database_username:database_password@localhost:5432/datebase_name?schema=public"
 ```
 
+With Prisma installed and environment variables set up, you can now run migrations to sync your Prisma schema with your database:
+```bash
+npx prisma migrate dev
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
