@@ -29,12 +29,6 @@ install Prisma globally:
 npm install -g prisma
 ```
 
-Initialize Prisma in your project:
-```bash
-prisma init
-```
-Configure Prisma to use your database. Update the schema.prisma file with your database connection details.
-
 Set up environment variables:
 Create a .env file in the root directory and add the following
 ```bash
