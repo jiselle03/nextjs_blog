@@ -23,16 +23,16 @@ export const POST = async (req: NextRequest) => {
 };
 
 // TODO: Use cookies later
-export const GET = async (req: NextRequest) => {
+export const GET = async () => {
   try {
-    const userId = mockUserId;
+    const userId = Number(mockUserId);
 
     if (!userId) {
       return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
     }
 
     const user = await prisma.user.findUnique({
-      where: { id: Number(userId) },
+      where: { id: userId },
     });
 
     if (!user) {
