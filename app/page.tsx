@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // Importing from next/navigation
+import { useRouter } from 'next/navigation';
 
 const Home = () => {
   const router = useRouter();

@@ -1,5 +1,3 @@
-// app/api/users/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
@@ -10,14 +8,14 @@ export const POST = async (req: NextRequest) => {
   try {
     const { username, email } = await req.json();
 
-    const newUser = await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         username,
         email,
       },
     });
 
-    return NextResponse.json(newUser, { status: 201 });
+    return NextResponse.json(user, { status: 201 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'An error occurred while creating the user.' }, { status: 500 });
