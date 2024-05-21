@@ -13,7 +13,7 @@ const Home = () => {
       const response = await fetch('/api/users', {
         method: 'GET',
       });
-
+      
       if (response.ok) {
         const data = await response.json();
         setUser(data);
@@ -33,7 +33,6 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log(user, 'hello')
     if (user) {
       router.push('/dashboard');
     } else {

@@ -6,10 +6,11 @@ import { IoPerson, IoEllipsisHorizontal, IoTrash, IoPencil, IoSend, IoHeartOutli
 type Props = {
   userId: string;
   username: string;
-  num: number;
+  title: string;
+  content: string;
 }
 
-const BlogPost = ({ userId, username, num }: Props) => {
+const BlogPost = ({ userId, username, title, content }: Props) => {
   const [liked, setLiked] = useState(false);
 
   const toggleLike = (): void => {
@@ -30,7 +31,8 @@ const BlogPost = ({ userId, username, num }: Props) => {
         </div>
       </div>
       <div className="pt-4">
-        Blog post {num}
+        <h3>{title}</h3>
+        <p>{content}</p>
       </div>
       {
         userId === currentUserId && (
