@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 const Login = () => {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-white dark:bg-black p-6">
@@ -13,7 +15,7 @@ const Login = () => {
               name="email"
               type="email"
               required
-              placeholder="Enter your email"
+              placeholder="Email"
               className="mt-1 block w-full p-3 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-white"
             />
           </div>
@@ -24,6 +26,14 @@ const Login = () => {
             Sign In
           </button>
         </form>
+        <p className="mt-4 text-center">
+          New to Blogr? <Link
+            href='/register'
+            className="underline cursor-pointer"
+          >
+            Sign up!
+          </Link>
+        </p>
       </div>
     </main>
   );
