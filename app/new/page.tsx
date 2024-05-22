@@ -7,10 +7,10 @@ import { borderClassNames } from '@/styles/classNames';
 const New = () => {
   const router = useRouter();
 
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [tags, setTags] = useState('');
-  const [authorId, setAuthorId] = useState(1); // TODO: Use real user ID
+  const [title, setTitle] = useState<string>('');
+  const [content, setContent] = useState<string>('');
+  const [tags, setTags] = useState<string>('');
+  const [authorId, setAuthorId] = useState<number>(1); // TODO: Use real user ID
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();

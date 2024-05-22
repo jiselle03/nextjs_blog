@@ -16,7 +16,7 @@ const NavBar = () => {
     title: 'Settings',
     pathname: '/settings',
     icon: <IoSettings />
-  }]
+  }];
 
   return (
     <nav className="w-1/4 p-4">

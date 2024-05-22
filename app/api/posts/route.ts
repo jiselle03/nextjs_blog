@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
+const mockUserId = process.env.NEXT_PUBLIC_MOCK_USER_ID; // TODO: Replace with real current user ID
 
 export const POST = async (req: NextRequest) => {
   const { title, content, tags, authorId } = await req.json();
@@ -27,20 +28,20 @@ export const POST = async (req: NextRequest) => {
   }
 };
 
-export const GET = async (req: NextRequest) => {
-  // Assume that you are getting the userId from the query parameters or cookies
-  const userId = Number(req.nextUrl.searchParams.get('userId'));
+export const GET = async () => {
+  const userId = Number(mockUserId);
 
   if (!userId) {
     return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
   }
 
   try {
-    // Fetch the posts of the users that the current user is following
     const posts = await prisma.post.findMany({
       where: {
         OR: [
+          // Fetch the posts of the current user
           { authorId: userId },
+          // And the posts of users that the current user is following
           {
             author: {
               followers: {
