@@ -2,7 +2,8 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { IoHome, IoSettings, IoAddSharp } from "react-icons/io5";
+import { IoHome, IoSettings, IoAddSharp } from 'react-icons/io5';
+import { iconClassNames } from '@/styles/classNames';
 
 const NavBar = () => {
   const pathname = usePathname();
@@ -39,7 +40,7 @@ const NavBar = () => {
         href="/new"
         className="pt-4 p-2 flex items-center gap-1.5 text-gray-800"
       >
-        <IoAddSharp />
+        <IoAddSharp className={iconClassNames({})} />
         New
       </Link>
     </nav>

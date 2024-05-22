@@ -1,4 +1,5 @@
 import { IoPencil } from "react-icons/io5";
+import { iconClassNames, borderClassNames } from '@/styles/classNames';
 import NavBar from '@/components/nav-bar';
 import SearchBar from '@/components/search-bar';
 
@@ -12,7 +13,7 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="flex-grow p-4">
-        <div className="bg-white p-4 border rounded">
+        <div className={`bg-white p-4 ${borderClassNames({})}`}>
           <h2 className="pb-6 border-b-2 border-gray-300 text-xl font-semibold">Account</h2>
           <div className="divide-y divide-gray-300">
             {
@@ -23,7 +24,7 @@ const Dashboard = () => {
                 >
                   <h3 className="w-36 font-medium">{item}</h3>
                   <p className="flex-grow">Text</p>
-                  <IoPencil className="cursor-pointer text-gray-500 h-5 w-5" />
+                  <IoPencil className={iconClassNames({})} />
                 </div>
               ))
             }
