@@ -1,47 +1,58 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client'
+import { NextRequest, NextResponse } from 'next/server'
 
-const prisma = new PrismaClient();
-const mockUserId = process.env.NEXT_PUBLIC_MOCK_USER_ID;
+const prisma = new PrismaClient()
+const mockUserId = process.env.NEXT_PUBLIC_MOCK_USER_ID
 
 export const POST = async (req: NextRequest) => {
   try {
-    const { username, email } = await req.json();
+    const { username, email } = await req.json()
 
     const user = await prisma.user.create({
       data: {
         username,
         email,
       },
-    });
+    })
 
-    return NextResponse.json(user, { status: 201 });
+    return NextResponse.json(user, { status: 201 })
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'An error occurred while creating the user.' }, { status: 500 });
+    console.error(error)
+
+    return NextResponse.json(
+      { error: 'An error occurred while creating the user.' },
+      { status: 500 },
+    )
   }
-};
+}
 
 // TODO: Use cookies later
 export const GET = async () => {
   try {
-    const userId = Number(mockUserId);
+    const userId = Number(mockUserId)
 
     if (!userId) {
-      return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'User ID is required' },
+        { status: 400 },
+      )
     }
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
-    });
+    })
 
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    return NextResponse.json(user, { status: 200 });
+    return NextResponse.json(user, { status: 200 })
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'An error occurred while querying the user.' }, { status: 500 });
+    console.error(error)
+
+    return NextResponse.json(
+      { error: 'An error occurred while querying the user.' },
+      { status: 500 },
+    )
   }
-};
+}

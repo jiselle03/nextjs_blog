@@ -1,19 +1,19 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { borderClassNames } from '@/styles/classNames';
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { borderClassNames } from '@/styles/classNames'
 
 const New = () => {
-  const router = useRouter();
+  const router = useRouter()
 
-  const [title, setTitle] = useState<string>('');
-  const [content, setContent] = useState<string>('');
-  const [tags, setTags] = useState<string>('');
-  const [authorId, setAuthorId] = useState<number>(1); // TODO: Use real user ID
+  const [title, setTitle] = useState<string>('')
+  const [content, setContent] = useState<string>('')
+  const [tags, setTags] = useState<string>('')
+  const [authorId, setAuthorId] = useState<number>(1) // TODO: Use real user ID
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+    event.preventDefault()
 
     try {
       const response = await fetch('/api/posts', {
@@ -24,22 +24,23 @@ const New = () => {
         body: JSON.stringify({
           title,
           content,
-          tags: tags.split(',').map(tag => tag.trim()),
+          tags: tags.split(',').map((tag) => tag.trim()),
           authorId,
         }),
-      });
-  
+      })
+
       if (response.ok) {
-        await response.json();
-        router.push('/dashboard');
+        await response.json()
+        router.push('/dashboard')
       } else {
-        const errorData = await response.json();
-        console.error('Failed to create post:', errorData.error);
+        const errorData = await response.json()
+
+        console.error('Failed to create post:', errorData.error)
       }
     } catch (error) {
-      console.error('Error:', error);
-    };
-  };
+      console.error('Error:', error)
+    }
+  }
 
   return (
     <div className="min-h-screen p-24">
@@ -92,7 +93,7 @@ const New = () => {
         </div>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default New;
+export default New

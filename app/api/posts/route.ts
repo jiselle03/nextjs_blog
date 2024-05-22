@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client'
+import { NextRequest, NextResponse } from 'next/server'
 
-const prisma = new PrismaClient();
-const mockUserId = process.env.NEXT_PUBLIC_MOCK_USER_ID; // TODO: Replace with real current user ID
+const prisma = new PrismaClient()
+const mockUserId = process.env.NEXT_PUBLIC_MOCK_USER_ID // TODO: Replace with real current user ID
 
 export const POST = async (req: NextRequest) => {
-  const { title, content, tags, authorId } = await req.json();
+  const { title, content, tags, authorId } = await req.json()
 
   try {
     const post = await prisma.post.create({
@@ -19,20 +19,21 @@ export const POST = async (req: NextRequest) => {
           },
         },
       },
-    });
+    })
 
-    return NextResponse.json(post, { status: 201 });
+    return NextResponse.json(post, { status: 201 })
   } catch (error) {
-    console.error( error);
-    return NextResponse.json({ error: 'Error creating post' }, { status: 500 });
+    console.error(error)
+
+    return NextResponse.json({ error: 'Error creating post' }, { status: 500 })
   }
-};
+}
 
 export const GET = async () => {
-  const userId = Number(mockUserId);
+  const userId = Number(mockUserId)
 
   if (!userId) {
-    return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+    return NextResponse.json({ error: 'User ID is required' }, { status: 400 })
   }
 
   try {
@@ -55,11 +56,12 @@ export const GET = async () => {
         createdAt: 'desc',
       },
       include: { author: true },
-    });
+    })
 
-    return NextResponse.json(posts);
+    return NextResponse.json(posts)
   } catch (error) {
-    console.error('Error fetching posts:', error);
-    return NextResponse.json({ error: 'Error fetching posts' }, { status: 500 });
+    console.error('Error fetching posts:', error)
+
+    return NextResponse.json({ error: 'Error fetching posts' }, { status: 500 })
   }
-};
+}

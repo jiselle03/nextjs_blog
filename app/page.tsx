@@ -1,47 +1,50 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { User } from '@/types';
+import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+
+import { User } from '@/types'
 
 const Home = () => {
-  const router = useRouter();
+  const router = useRouter()
 
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null)
 
   const fetchCurrentUser = async () => {
     try {
       const response = await fetch('/api/users', {
         method: 'GET',
-      });
-      
+      })
+
       if (response.ok) {
-        const data = await response.json();
-        setUser(data);
+        const data = await response.json()
+
+        setUser(data)
       } else {
-        setUser(null);
-        const errorData = await response.json();
-        console.error('Failed to fetch current user:', errorData.error);
+        setUser(null)
+        const errorData = await response.json()
+
+        console.error('Failed to fetch current user:', errorData.error)
       }
     } catch (error) {
-      console.error('Error:', error);
-      setUser(null);
-    };
-  };
+      console.error('Error:', error)
+      setUser(null)
+    }
+  }
 
   useEffect(() => {
-    fetchCurrentUser();
-  }, []);
+    fetchCurrentUser()
+  }, [])
 
   useEffect(() => {
     if (user) {
-      router.push('/dashboard');
+      router.push('/dashboard')
     } else {
-      router.push('/login');
+      router.push('/login')
     }
-  }, [user, router]);
+  }, [user, router])
 
-  return null;
-};
+  return null
+}
 
-export default Home;
+export default Home
