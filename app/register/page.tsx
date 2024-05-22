@@ -1,9 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 const Register = () => {
+  const router = useRouter();
+
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
 
@@ -20,14 +23,15 @@ const Register = () => {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        console.log(`User created with ID: ${data.id}`);
+        await response.json();
+        router.push('/dashboard');
       } else {
-        console.log('Error creating user');
+        const errorData = await response.json();
+        console.error('Failed to create user:', errorData.error);
       }
     } catch (error) {
       console.error('Error:', error);
-    }
+    };
   };
 
   return (

@@ -20,12 +20,12 @@ const Home = () => {
       } else {
         setUser(null);
         const errorData = await response.json();
-        console.log(errorData.error);
+        console.error('Failed to fetch current user:', errorData.error);
       }
     } catch (error) {
       console.error('Error:', error);
       setUser(null);
-    }
+    };
   };
 
   useEffect(() => {

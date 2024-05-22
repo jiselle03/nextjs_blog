@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Post } from '@/_types';
+import { Post } from '@/types';
 import BlogPost from '@/components/blog-post';
 import NavBar from '@/components/nav-bar';
 import SearchBar from '@/components/search-bar';
@@ -27,11 +27,12 @@ const Dashboard = () => {
         const data = await response.json();
         setPosts(data);
       } else {
-        console.error('Failed to fetch posts');
+        const errorData = await response.json();
+        console.error('Failed to fetch posts:', errorData.error);
       }
     } catch (error) {
       console.error('Error:', error);
-    }
+    };
   };
 
   useEffect(() => {
