@@ -7,8 +7,8 @@ import Link from 'next/link';
 const Register = () => {
   const router = useRouter();
 
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
 
   const createUser = async (event: React.FormEvent) => {
     event.preventDefault();

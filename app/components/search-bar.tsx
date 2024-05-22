@@ -5,7 +5,7 @@ import { IoSearch } from 'react-icons/io5';
 import { iconClassNames, borderClassNames } from '@/styles/classNames';
 
 const SearchBar = () => {
-  const [isFocused, setIsFocused] = useState(false);
+  const [isFocused, setIsFocused] = useState<boolean>(false);
 
   return (
   <div className="relative w-1/4 p-4">

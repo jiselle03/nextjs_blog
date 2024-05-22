@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { IoPerson, IoEllipsisHorizontal, IoTrash, IoPencil, IoSend, IoHeartOutline, IoHeart } from 'react-icons/io5';
 import { iconClassNames, borderClassNames } from '@/styles/classNames';
 
@@ -12,7 +13,7 @@ type Props = {
 }
 
 const BlogPost = ({ userId, username, title, content }: Props) => {
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState<boolean>(false);
 
   const toggleLike = (): void => {
     setLiked(!liked);
@@ -23,10 +24,13 @@ const BlogPost = ({ userId, username, title, content }: Props) => {
   return (
     <div className={`p-4 mb-4 bg-white ${borderClassNames({})}`}>
       <div className="flex justify-between items-center border-b border-gray-300 pb-4">
-        <div className="cursor-pointer flex items-center gap-1.5 text-gray-800 hover:text-gray-500">
+        <Link
+          href={`/${username}`}
+          className="cursor-pointer flex items-center gap-1.5 text-gray-800 hover:text-gray-500"
+        >
           <IoPerson className={iconClassNames({})} />
-          {username}
-        </div>
+          {username} 
+        </Link>
         <div className="cursor-pointer">
           <IoEllipsisHorizontal className={iconClassNames({})} />
         </div>
