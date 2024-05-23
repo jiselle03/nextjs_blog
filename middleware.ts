@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { getCookies } from 'cookies-next'
 
 export const middleware = (req: NextRequest) => {
-  // TODO: Use real user ID
-  const mockUserId = process.env.NEXT_PUBLIC_MOCK_USER_ID
-
-  const loggedIn = !!Number(mockUserId)
+  const cookies = getCookies({ req })
+  
+  const loggedIn = !!Number(cookies.userId)
 
   const url = req.nextUrl.clone()
 
