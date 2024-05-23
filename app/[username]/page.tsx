@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
-import { getCurrentUserId } from '@/utils/cookies'
+import { currentUserId } from '@/utils/cookies'
 import BlogPost from '@/components/blog-post'
 import NavBar from '@/components/nav-bar'
 import SearchBar from '@/components/search-bar'
@@ -52,7 +52,7 @@ const Blog = () => {
         {posts.map((post) => (
           <BlogPost
             key={post.id}
-            currentUserId={getCurrentUserId()}
+            currentUserId={currentUserId}
             userId={author.id}
             username={author.username}
             title={post.title}

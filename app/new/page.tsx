@@ -10,7 +10,6 @@ const New = () => {
   const [title, setTitle] = useState<string>('')
   const [content, setContent] = useState<string>('')
   const [tags, setTags] = useState<string>('')
-  const [authorId, setAuthorId] = useState<number>(1) // TODO: Use real user ID
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -24,8 +23,7 @@ const New = () => {
         body: JSON.stringify({
           title,
           content,
-          tags: tags.split(',').map((tag) => tag.trim()),
-          authorId,
+          tags: tags.split(',').map((tag) => tag.trim())
         }),
       })
 

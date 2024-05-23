@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 import { getCurrentUserId } from '@/utils/cookies'
 
 export const middleware = (req: NextRequest) => {
-  const loggedIn = !!getCurrentUserId()
+  const loggedIn = !!getCurrentUserId(req)
 
   const url = req.nextUrl.clone()
 

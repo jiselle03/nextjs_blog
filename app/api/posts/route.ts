@@ -1,13 +1,15 @@
 import { PrismaClient } from '@prisma/client'
 import { NextRequest, NextResponse } from 'next/server'
-import { getCookies } from 'cookies-next'
+import { getCurrentUserId } from '@/utils/cookies'
 
 const prisma = new PrismaClient()
 
 export const POST = async (req: NextRequest) => {
-  const { title, content, tags, authorId } = await req.json()
-
+  const { title, content, tags } = await req.json()
+  
   try {
+    const currentUserId = getCurrentUserId(req)
+
     const post = await prisma.post.create({
       data: {
         title,
@@ -15,7 +17,7 @@ export const POST = async (req: NextRequest) => {
         tags,
         author: {
           connect: {
-            id: Number(authorId),
+            id: currentUserId,
           },
         },
       },
@@ -30,10 +32,9 @@ export const POST = async (req: NextRequest) => {
 }
 
 export const GET = async (req: NextRequest) => {
-  const cookies = getCookies({ req })
-  const userId = Number(cookies.userId)
+  const currentUserId = getCurrentUserId(req)
 
-  if (!userId) {
+  if (!currentUserId) {
     return NextResponse.json({ error: 'User ID is required' }, { status: 400 })
   }
 
@@ -42,12 +43,12 @@ export const GET = async (req: NextRequest) => {
       where: {
         OR: [
           // Fetch the posts of the current user
-          { authorId: userId },
+          { authorId: currentUserId },
           // And the posts of users that the current user is following
           {
             author: {
               followers: {
-                some: { followerId: userId },
+                some: { followerId: currentUserId },
               },
             },
           },
