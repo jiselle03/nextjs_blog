@@ -1,11 +1,9 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { getCookies } from 'cookies-next'
+import { getCurrentUserId } from '@/utils/cookies'
 
 export const middleware = (req: NextRequest) => {
-  const cookies = getCookies({ req })
-  
-  const loggedIn = !!Number(cookies.userId)
+  const loggedIn = !!getCurrentUserId()
 
   const url = req.nextUrl.clone()
 
@@ -16,8 +14,4 @@ export const middleware = (req: NextRequest) => {
   }
 
   return NextResponse.next()
-}
-
-export const config = {
-  matcher: '/', // Only run this middleware on the root path
 }

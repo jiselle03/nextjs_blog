@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
+import { getCurrentUserId } from '@/utils/cookies'
 import BlogPost from '@/components/blog-post'
 import NavBar from '@/components/nav-bar'
 import SearchBar from '@/components/search-bar'
@@ -47,7 +48,8 @@ const Dashboard = () => {
         {posts.map((post) => (
           <BlogPost
             key={post.id}
-            userId={`${post.id}`}
+            currentUserId={getCurrentUserId()}
+            userId={post.author.id}
             username={post.author?.username}
             title={post.title}
             content={post.content}

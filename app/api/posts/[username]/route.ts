@@ -25,7 +25,7 @@ export const GET = async (
     )
 
     return NextResponse.json({
-      username: user.username,
+      author: user,
       posts,
     })
   } catch (error) {
