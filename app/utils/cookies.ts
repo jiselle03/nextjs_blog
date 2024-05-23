@@ -1,8 +1,15 @@
-import type { NextRequest } from 'next/server'
+import { NextRequest } from 'next/server'
 import { getCookies } from 'cookies-next'
 
-export const getCurrentUserId = () => {
-  const cookies = getCookies()
+export let currentUserId: number = 0
 
-  return Number(cookies.userId)
+export const getCurrentUserId = (req: NextRequest): number => {
+  if (!!currentUserId) {
+    return currentUserId
+  }
+
+  const cookies = getCookies({ req })
+  currentUserId = Number(cookies.userId)
+
+  return currentUserId
 }

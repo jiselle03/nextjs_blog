@@ -1,8 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 import { NextRequest, NextResponse } from 'next/server'
+import { getCurrentUserId } from '@/utils/cookies'
 
 const prisma = new PrismaClient()
-const mockUserId = process.env.NEXT_PUBLIC_MOCK_USER_ID
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -26,12 +26,11 @@ export const POST = async (req: NextRequest) => {
   }
 }
 
-// TODO: Use cookies later
-export const GET = async () => {
+export const GET = async (req: NextRequest) => {
   try {
-    const userId = Number(mockUserId)
+    const currentUserId = getCurrentUserId(req)
 
-    if (!userId) {
+    if (!currentUserId) {
       return NextResponse.json(
         { error: 'User ID is required' },
         { status: 400 },
@@ -39,7 +38,7 @@ export const GET = async () => {
     }
 
     const user = await prisma.user.findUnique({
-      where: { id: userId },
+      where: { id: currentUserId },
     })
 
     if (!user) {
