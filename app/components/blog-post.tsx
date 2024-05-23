@@ -1,25 +1,33 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { IoPerson, IoEllipsisHorizontal, IoTrash, IoPencil, IoSend, IoHeartOutline, IoHeart } from 'react-icons/io5';
-import { iconClassNames, borderClassNames } from '@/styles/classNames';
+import Link from 'next/link'
+import { useState } from 'react'
+import {
+  IoPerson,
+  IoEllipsisHorizontal,
+  IoTrash,
+  IoPencil,
+  IoSend,
+  IoHeartOutline,
+  IoHeart,
+} from 'react-icons/io5'
+import { iconClassNames, borderClassNames } from '@/styles/classNames'
 
 type Props = {
-  userId: string;
-  username: string;
-  title: string;
-  content: string;
+  userId: string
+  username: string
+  title: string
+  content: string
 }
 
 const BlogPost = ({ userId, username, title, content }: Props) => {
-  const [liked, setLiked] = useState<boolean>(false);
+  const [liked, setLiked] = useState<boolean>(false)
 
   const toggleLike = (): void => {
-    setLiked(!liked);
-  };
+    setLiked(!liked)
+  }
 
-  const currentUserId = '1';
+  const currentUserId = '1'
 
   return (
     <div className={`p-4 mb-4 bg-white ${borderClassNames({})}`}>
@@ -29,7 +37,7 @@ const BlogPost = ({ userId, username, title, content }: Props) => {
           className="cursor-pointer flex items-center gap-1.5 text-gray-800 hover:text-gray-500"
         >
           <IoPerson className={iconClassNames({})} />
-          {username} 
+          {username}
         </Link>
         <div className="cursor-pointer">
           <IoEllipsisHorizontal className={iconClassNames({})} />
@@ -39,14 +47,12 @@ const BlogPost = ({ userId, username, title, content }: Props) => {
         <h3>{title}</h3>
         <p>{content}</p>
       </div>
-      {
-        userId === currentUserId && (
-          <div className="py-4 flex justify-end items-center gap-1.5 border-b border-gray-300">
-            <IoTrash className={iconClassNames({})} />
-            <IoPencil className={iconClassNames({})} />
-          </div>
-        )
-      }
+      {userId === currentUserId && (
+        <div className="py-4 flex justify-end items-center gap-1.5 border-b border-gray-300">
+          <IoTrash className={iconClassNames({})} />
+          <IoPencil className={iconClassNames({})} />
+        </div>
+      )}
       <div className="pt-4 flex justify-end items-center gap-1.5">
         <IoSend className={iconClassNames({})} />
         {liked ? (
@@ -55,14 +61,11 @@ const BlogPost = ({ userId, username, title, content }: Props) => {
             onClick={toggleLike}
           />
         ) : (
-          <IoHeartOutline
-            className={iconClassNames({})}
-            onClick={toggleLike}
-          />
+          <IoHeartOutline className={iconClassNames({})} onClick={toggleLike} />
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BlogPost;
+export default BlogPost

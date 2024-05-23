@@ -1,16 +1,16 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 const Login = () => {
-  const router = useRouter();
+  const router = useRouter()
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('')
 
   const handleLogin = async (event: React.FormEvent) => {
-    event.preventDefault();
+    event.preventDefault()
 
     try {
       const response = await fetch('/api/login', {
@@ -19,29 +19,34 @@ const Login = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email }),
-      });
+      })
 
       if (response.ok) {
-        const data = await response.json();
+        const data = await response.json()
 
-        console.log(`Logged in with user ID: ${data.id}`);
+        console.log(`Logged in with user ID: ${data.id}`)
 
-        router.push('/dashboard');
+        router.push('/dashboard')
       } else {
-        console.log('Error logging in');
+        console.log('Error logging in')
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error:', error)
     }
-  };
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-white dark:bg-black p-6">
       <div className="w-full max-w-sm bg-gray-200 dark:bg-gray-900 shadow-lg rounded-lg p-8">
-        <h1 className="text-4xl font-bold text-center mb-6 text-black dark:text-white">Login</h1>
+        <h1 className="text-4xl font-bold text-center mb-6 text-black dark:text-white">
+          Login
+        </h1>
         <form className="space-y-6" onSubmit={handleLogin}>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Email
             </label>
             <input
@@ -63,16 +68,14 @@ const Login = () => {
           </button>
         </form>
         <p className="mt-4 text-center">
-          New to Blogr? <Link
-            href='/register'
-            className="underline cursor-pointer"
-          >
+          New to Blogr?{' '}
+          <Link href="/register" className="underline cursor-pointer">
             Sign up!
           </Link>
         </p>
       </div>
     </main>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

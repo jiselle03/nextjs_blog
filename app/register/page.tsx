@@ -1,17 +1,17 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 const Register = () => {
-  const router = useRouter();
+  const router = useRouter()
 
-  const [username, setUsername] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
+  const [username, setUsername] = useState<string>('')
+  const [email, setEmail] = useState<string>('')
 
   const createUser = async (event: React.FormEvent) => {
-    event.preventDefault();
+    event.preventDefault()
 
     try {
       const response = await fetch('/api/users', {
@@ -20,30 +20,33 @@ const Register = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, email }),
-      });
+      })
 
       if (response.ok) {
-        await response.json();
-        router.push('/dashboard');
+        await response.json()
+        router.push('/dashboard')
       } else {
-        const errorData = await response.json();
-        console.error('Failed to create user:', errorData.error);
+        const errorData = await response.json()
+
+        console.error('Failed to create user:', errorData.error)
       }
     } catch (error) {
-      console.error('Error:', error);
-    };
-  };
+      console.error('Error:', error)
+    }
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-white dark:bg-black p-6">
       <div className="w-full max-w-sm bg-gray-200 dark:bg-gray-900 shadow-lg rounded-lg p-8">
-        <h1 className="text-4xl font-bold text-center mb-6 text-black dark:text-white">Register</h1>
-        <form
-          className="space-y-6"
-          onSubmit={createUser}
-        >
+        <h1 className="text-4xl font-bold text-center mb-6 text-black dark:text-white">
+          Register
+        </h1>
+        <form className="space-y-6" onSubmit={createUser}>
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Username
             </label>
             <input
@@ -58,7 +61,10 @@ const Register = () => {
             />
           </div>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Email
             </label>
             <input
@@ -80,16 +86,14 @@ const Register = () => {
           </button>
         </form>
         <p className="mt-4 text-center">
-          Already have an account? <Link
-            href='/login'
-            className="underline cursor-pointer"
-          >
+          Already have an account?{' '}
+          <Link href="/login" className="underline cursor-pointer">
             Login here.
           </Link>
         </p>
       </div>
     </main>
-  );
-};
+  )
+}
 
-export default Register;
+export default Register

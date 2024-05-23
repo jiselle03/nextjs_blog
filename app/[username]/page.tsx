@@ -1,40 +1,43 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import { Post } from '@/types';
-import BlogPost from '@/components/blog-post';
-import NavBar from '@/components/nav-bar';
-import SearchBar from '@/components/search-bar';
+import { useParams } from 'next/navigation'
+import { useState, useEffect } from 'react'
+
+import BlogPost from '@/components/blog-post'
+import NavBar from '@/components/nav-bar'
+import SearchBar from '@/components/search-bar'
+import { Post } from '@/types'
 
 const Blog = () => {
-  const params = useParams<{ username: string }>();
+  const params = useParams<{ username: string }>()
 
-  const [username, setUsername] = useState<string>('');
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [username, setUsername] = useState<string>('')
+  const [posts, setPosts] = useState<Post[]>([])
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await fetch(`/api/posts/${params.username}`, {
           method: 'GET',
-        });
-  
+        })
+
         if (response.ok) {
-          const data = await response.json();
-          setUsername(data.username);
-          setPosts(data.posts);
+          const data = await response.json()
+
+          setUsername(data.username)
+          setPosts(data.posts)
         } else {
-          const errorData = await response.json();
-          console.error('Failed to fetch posts:', errorData.error);
+          const errorData = await response.json()
+
+          console.error('Failed to fetch posts:', errorData.error)
         }
       } catch (error) {
-        console.error('Error:', error);
-      };
-    };
-  
-    fetchPosts();
-  }, [params.username]);
+        console.error('Error:', error)
+      }
+    }
+
+    fetchPosts()
+  }, [params.username])
 
   return (
     <div className="flex flex-row min-h-screen justify-between p-24 divide-x divide-gray-300">
@@ -45,7 +48,7 @@ const Blog = () => {
       <div className="flex-grow p-4">
         <h3 className="font-semibold mb-4">{params.username}</h3>
 
-        {posts.map(post => (
+        {posts.map((post) => (
           <BlogPost
             key={post.id}
             userId={`${post.id}`}
@@ -59,7 +62,7 @@ const Blog = () => {
       {/* Right panel */}
       <SearchBar />
     </div>
-  );
-};
+  )
+}
 
-export default Blog;
+export default Blog

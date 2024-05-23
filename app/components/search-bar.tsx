@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { IoSearch } from 'react-icons/io5';
-import { iconClassNames, borderClassNames } from '@/styles/classNames';
+import { useState } from 'react'
+import { IoSearch } from 'react-icons/io5'
+import { iconClassNames, borderClassNames } from '@/styles/classNames'
 
 const SearchBar = () => {
-  const [isFocused, setIsFocused] = useState<boolean>(false);
+  const [isFocused, setIsFocused] = useState<boolean>(false)
 
   return (
-  <div className="relative w-1/4 p-4">
+    <div className="relative w-1/4 p-4">
       <IoSearch
         className={`absolute inset-6 left-6 ${isFocused ? iconClassNames({ size: 'large' }) : iconClassNames({ size: 'large', color: 'light' })}`}
       />
@@ -22,7 +22,7 @@ const SearchBar = () => {
         onBlur={() => setIsFocused(false)}
       />
     </div>
-  );
-};
+  )
+}
 
-export default SearchBar;
+export default SearchBar
