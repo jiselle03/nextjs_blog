@@ -14,20 +14,19 @@ import {
 import { iconClassNames, borderClassNames } from '@/styles/classNames'
 
 type Props = {
-  userId: string
+  currentUserId: number
+  userId: number
   username: string
   title: string
   content: string
 }
 
-const BlogPost = ({ userId, username, title, content }: Props) => {
+const BlogPost = ({ currentUserId, userId, username, title, content }: Props) => {
   const [liked, setLiked] = useState<boolean>(false)
 
   const toggleLike = (): void => {
     setLiked(!liked)
   }
-
-  const currentUserId = '1'
 
   return (
     <div className={`p-4 mb-4 bg-white ${borderClassNames({})}`}>

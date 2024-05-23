@@ -3,15 +3,16 @@
 import { useParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
+import { getCurrentUserId } from '@/utils/cookies'
 import BlogPost from '@/components/blog-post'
 import NavBar from '@/components/nav-bar'
 import SearchBar from '@/components/search-bar'
-import { Post } from '@/types'
+import { User, Post } from '@/types'
 
 const Blog = () => {
   const params = useParams<{ username: string }>()
 
-  const [username, setUsername] = useState<string>('')
+  const [author, setAuthor] = useState<User>({} as User)
   const [posts, setPosts] = useState<Post[]>([])
 
   useEffect(() => {
@@ -24,7 +25,7 @@ const Blog = () => {
         if (response.ok) {
           const data = await response.json()
 
-          setUsername(data.username)
+          setAuthor(data.author)
           setPosts(data.posts)
         } else {
           const errorData = await response.json()
@@ -51,8 +52,9 @@ const Blog = () => {
         {posts.map((post) => (
           <BlogPost
             key={post.id}
-            userId={`${post.id}`}
-            username={username}
+            currentUserId={getCurrentUserId()}
+            userId={author.id}
+            username={author.username}
             title={post.title}
             content={post.content}
           />
