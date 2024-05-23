@@ -8,8 +8,6 @@ import NavBar from '@/components/nav-bar'
 import SearchBar from '@/components/search-bar'
 import { Post } from '@/types'
 
-const userId = process.env.NEXT_PUBLIC_MOCK_USER_ID // TODO: Replace with real current user ID
-
 const Dashboard = () => {
   const router = useRouter()
 
@@ -36,12 +34,6 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
-    if (!userId) {
-      router.push('/login')
-
-      return
-    }
-
     fetchPosts()
   }, [router])
 
