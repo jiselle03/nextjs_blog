@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
-
+import { useAuth } from '@/providers/AuthProvider'
 import BlogPost from '@/components/blog-post'
 import NavBar from '@/components/nav-bar'
 import SearchBar from '@/components/search-bar'
@@ -10,32 +10,17 @@ import { User, Post } from '@/types'
 
 const Blog = () => {
   const params = useParams<{ username: string }>()
+  const { currentUser, fetchCurrentUser } = useAuth()
 
   const [author, setAuthor] = useState<User>({} as User)
   const [posts, setPosts] = useState<Post[]>([])
-  const [currentUserId, setCurrentUserId] = useState<number>(0)
 
   useEffect(() => {
-    const fetchCurrentUser = async () => {
-      try {
-        const response = await fetch('/api/users', {
-          method: 'GET',
-        })
+    fetchCurrentUser()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-        if (response.ok) {
-          const data = await response.json()
-
-          setCurrentUserId(data.id)
-        } else {
-          const errorData = await response.json()
-
-          console.error('Failed to fetch current user:', errorData.error)
-        }
-      } catch (error) {
-        console.error('Error:', error)
-      }
-    }
-
+  useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await fetch(`/api/posts/${params.username}`, {
@@ -57,9 +42,10 @@ const Blog = () => {
       }
     }
 
-    fetchCurrentUser()
-    fetchPosts()
-  }, [params.username])
+    if (currentUser) {
+      fetchPosts()
+    }
+  }, [currentUser, params.username])
 
   return (
     <div className="flex flex-row min-h-screen justify-between p-24 divide-x divide-gray-300">
@@ -73,7 +59,7 @@ const Blog = () => {
         {posts.map((post) => (
           <BlogPost
             key={post.id}
-            currentUserId={currentUserId}
+            currentUserId={currentUser?.id as number}
             userId={author.id}
             username={author.username}
             title={post.title}
