@@ -1,12 +1,13 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { IoHome, IoSettings, IoAddSharp } from 'react-icons/io5'
 import { iconClassNames } from '@/styles/classNames'
 
 const NavBar = () => {
   const pathname = usePathname()
+  const router = useRouter()
 
   const navItems = [
     {
@@ -20,6 +21,26 @@ const NavBar = () => {
       icon: <IoSettings />,
     },
   ]
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/login', {
+        method: 'DELETE',
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+
+        console.log(`Logged out user ID: ${data.id}`)
+
+        router.push('/login')
+      } else {
+        console.log('Error logging out')
+      }
+    } catch (error) {
+      console.error('Error:', error)
+    }
+  }
 
   return (
     <nav className="w-1/4 p-4">
@@ -43,6 +64,12 @@ const NavBar = () => {
         <IoAddSharp className={iconClassNames({})} />
         New
       </Link>
+      <p
+        className="cursor-pointer p-2 hover:bg-gray-300"
+        onClick={handleLogout}
+      >
+        Log Out
+      </p>
     </nav>
   )
 }
