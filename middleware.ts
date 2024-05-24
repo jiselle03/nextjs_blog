@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server'
+import { getSession } from '@/utils/cookies'
 import type { NextRequest } from 'next/server'
-import { getCurrentUserId } from '@/utils/cookies'
 
-export const middleware = (req: NextRequest) => {
-  const loggedIn = !!getCurrentUserId(req)
+export const middleware = async (req: NextRequest) => {
+  const session = await getSession()
 
   const url = req.nextUrl.clone()
 
-  if (url.pathname === '/' && !loggedIn) {
+  if (url.pathname === '/' && !session.isLoggedIn) {
     url.pathname = '/login'
 
     return NextResponse.redirect(url)
