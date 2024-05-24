@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 
 export const POST = async (req: NextRequest) => {
   const { title, content, tags } = await req.json()
-  
+
   try {
     const currentUserId = getCurrentUserId(req)
 
