@@ -1,6 +1,13 @@
 'use client'
 
-import React, { ReactNode, createContext, useContext, useState } from 'react'
+import React, {
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useState,
+  useEffect,
+} from 'react'
 import { useRouter } from 'next/navigation'
 import { User } from '@/types'
 
@@ -30,7 +37,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const [currentUser, setCurrentUser] = useState<User | null>(null)
 
-  const fetchCurrentUser = async () => {
+  const fetchCurrentUser = useCallback(async () => {
     try {
       const response = await fetch('/api/users', {
         method: 'GET',
@@ -58,7 +65,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       router.push('/login')
     }
-  }
+  }, [router])
+
+  useEffect(() => {
+    fetchCurrentUser()
+  }, [fetchCurrentUser])
 
   return (
     <AuthContext.Provider value={{ currentUser, fetchCurrentUser }}>
