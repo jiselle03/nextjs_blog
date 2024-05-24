@@ -1,30 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
 import { PrismaClient } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
-import { getIronSession } from 'iron-session'
+import { getSession } from '@/utils/cookies'
+import { SessionData } from '@/types'
 
 const prisma = new PrismaClient()
 
-interface SessionData {
-  email: string
-  isLoggedIn: boolean
-}
-
 const defaultSession: SessionData = {
+  id: 0,
   email: '',
+  username: '',
   isLoggedIn: false,
-}
-
-const getSession = async () => {
-  return await getIronSession<SessionData>(cookies(), {
-    password: process.env.SESSION_PASSWORD as string,
-    cookieName: 'user',
-    cookieOptions: {
-      secure: true,
-      maxAge: 86400, // 1 day
-    },
-  })
 }
 
 export const POST = async (req: NextRequest) => {
@@ -44,16 +30,18 @@ export const POST = async (req: NextRequest) => {
     const session = await getSession()
 
     if (!session.isLoggedIn) {
-      session.isLoggedIn = defaultSession.isLoggedIn
+      session.id = defaultSession.id
       session.email = defaultSession.email
+      session.username = defaultSession.username
+      session.isLoggedIn = defaultSession.isLoggedIn
     }
 
-    session.email = email
+    session.id = user.id
+    session.email = user.email
+    session.username = user.username
     session.isLoggedIn = true
     await session.save()
     revalidatePath('/dashboard')
-
-    cookies().set('userId', `${user.id}`)
 
     return NextResponse.json({ id: user.id }, { status: 200 })
   } catch (error) {
@@ -75,8 +63,6 @@ export const DELETE = async () => {
     session.destroy()
 
     revalidatePath('/login')
-
-    cookies().delete('userId')
 
     return NextResponse.json({ status: 200 })
   } catch (error) {

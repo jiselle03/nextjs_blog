@@ -1,13 +1,16 @@
-import { NextRequest } from 'next/server'
+import { cookies } from 'next/headers'
+import { getIronSession } from 'iron-session'
+import { SessionData } from '@/types'
 
-export let currentUserId: number = 0
+export const sessionOptions = {
+  password: process.env.SESSION_PASSWORD as string,
+  cookieName: 'user',
+  cookieOptions: {
+    secure: true,
+    maxAge: 86400, // 1 day
+  },
+}
 
-export const getCurrentUserId = (req: NextRequest): number => {
-  if (!!currentUserId) {
-    return currentUserId
-  }
-
-  currentUserId = Number(req.cookies.get('userId')?.value)
-
-  return currentUserId
+export const getSession = async () => {
+  return await getIronSession<SessionData>(cookies(), sessionOptions)
 }

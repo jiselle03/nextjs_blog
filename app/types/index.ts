@@ -13,3 +13,10 @@ export interface Post {
   tags: string[]
   author: User
 }
+
+export interface SessionData {
+  id: number
+  email: string
+  username: string
+  isLoggedIn: boolean
+}

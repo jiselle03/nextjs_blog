@@ -3,7 +3,6 @@
 import { useParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
-import { currentUserId } from '@/utils/cookies'
 import BlogPost from '@/components/blog-post'
 import NavBar from '@/components/nav-bar'
 import SearchBar from '@/components/search-bar'
@@ -14,8 +13,29 @@ const Blog = () => {
 
   const [author, setAuthor] = useState<User>({} as User)
   const [posts, setPosts] = useState<Post[]>([])
+  const [currentUserId, setCurrentUserId] = useState<number>(0)
 
   useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await fetch('/api/users', {
+          method: 'GET',
+        })
+
+        if (response.ok) {
+          const data = await response.json()
+
+          setCurrentUserId(data.id)
+        } else {
+          const errorData = await response.json()
+
+          console.error('Failed to fetch current user:', errorData.error)
+        }
+      } catch (error) {
+        console.error('Error:', error)
+      }
+    }
+
     const fetchPosts = async () => {
       try {
         const response = await fetch(`/api/posts/${params.username}`, {
@@ -37,6 +57,7 @@ const Blog = () => {
       }
     }
 
+    fetchCurrentUser()
     fetchPosts()
   }, [params.username])
 

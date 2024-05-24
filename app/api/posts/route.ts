@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { NextRequest, NextResponse } from 'next/server'
-import { getCurrentUserId } from '@/utils/cookies'
+import { getSession } from '@/utils/cookies'
 
 const prisma = new PrismaClient()
 
@@ -8,7 +8,8 @@ export const POST = async (req: NextRequest) => {
   const { title, content, tags } = await req.json()
 
   try {
-    const currentUserId = getCurrentUserId(req)
+    const session = await getSession()
+    const currentUserId = Number(session.id)
 
     const post = await prisma.post.create({
       data: {
@@ -31,8 +32,9 @@ export const POST = async (req: NextRequest) => {
   }
 }
 
-export const GET = async (req: NextRequest) => {
-  const currentUserId = getCurrentUserId(req)
+export const GET = async () => {
+  const session = await getSession()
+  const currentUserId = Number(session.id)
 
   if (!currentUserId) {
     return NextResponse.json({ error: 'User ID is required' }, { status: 400 })

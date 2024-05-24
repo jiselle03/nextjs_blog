@@ -13,7 +13,7 @@ import {
 } from 'react-icons/io5'
 import { iconClassNames, borderClassNames } from '@/styles/classNames'
 
-type Props = {
+type BlogPostProps = {
   currentUserId: number
   userId: number
   username: string
@@ -21,7 +21,13 @@ type Props = {
   content: string
 }
 
-const BlogPost = ({ currentUserId, userId, username, title, content }: Props) => {
+const BlogPost = ({
+  currentUserId,
+  userId,
+  username,
+  title,
+  content,
+}: BlogPostProps) => {
   const [liked, setLiked] = useState<boolean>(false)
 
   const toggleLike = (): void => {
