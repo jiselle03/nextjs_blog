@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   IoPerson,
   IoEllipsisHorizontal,
@@ -32,10 +33,16 @@ const BlogPost = ({
   content,
   onDelete,
 }: BlogPostProps) => {
+  const router = useRouter()
+
   const [liked, setLiked] = useState<boolean>(false)
 
   const toggleLike = (): void => {
     setLiked(!liked)
+  }
+
+  const onEdit = (): void => {
+    router.push(`/edit/${username}/${id}`)
   }
 
   return (
@@ -62,7 +69,7 @@ const BlogPost = ({
             className={iconClassNames({})}
             onClick={() => onDelete(id)}
           />
-          <IoPencil className={iconClassNames({})} />
+          <IoPencil className={iconClassNames({})} onClick={onEdit} />
         </div>
       )}
       <div className="pt-4 flex justify-end items-center gap-1.5">
