@@ -14,19 +14,23 @@ import {
 import { iconClassNames, borderClassNames } from '@/styles/classNames'
 
 type BlogPostProps = {
+  id: number
   currentUserId: number
   userId: number
   username: string
   title: string
   content: string
+  onDelete: (id: number) => Promise<void>
 }
 
 const BlogPost = ({
+  id,
   currentUserId,
   userId,
   username,
   title,
   content,
+  onDelete,
 }: BlogPostProps) => {
   const [liked, setLiked] = useState<boolean>(false)
 
@@ -54,7 +58,10 @@ const BlogPost = ({
       </div>
       {userId === currentUserId && (
         <div className="py-4 flex justify-end items-center gap-1.5 border-b border-gray-300">
-          <IoTrash className={iconClassNames({})} />
+          <IoTrash
+            className={iconClassNames({})}
+            onClick={() => onDelete(id)}
+          />
           <IoPencil className={iconClassNames({})} />
         </div>
       )}

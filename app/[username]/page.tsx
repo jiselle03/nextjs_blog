@@ -1,51 +1,39 @@
 'use client'
 
+import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'next/navigation'
-import { useState, useEffect } from 'react'
 import { useAuth } from '@/providers/AuthProvider'
+import { fetchUserPosts, deletePost } from '@/utils/posts'
+import { User, Post } from '@/types'
 import BlogPost from '@/components/blog-post'
 import NavBar from '@/components/nav-bar'
 import SearchBar from '@/components/search-bar'
-import { User, Post } from '@/types'
 
 const Blog = () => {
   const params = useParams<{ username: string }>()
-  const { currentUser, fetchCurrentUser } = useAuth()
+  const { currentUser } = useAuth()
 
   const [author, setAuthor] = useState<User>({} as User)
   const [posts, setPosts] = useState<Post[]>([])
 
-  useEffect(() => {
-    fetchCurrentUser()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const handleFetchPosts = useCallback(async (): Promise<void> => {
+    const data = await fetchUserPosts(params.username)
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch(`/api/posts/${params.username}`, {
-          method: 'GET',
-        })
-
-        if (response.ok) {
-          const data = await response.json()
-
-          setAuthor(data.author)
-          setPosts(data.posts)
-        } else {
-          const errorData = await response.json()
-
-          console.error('Failed to fetch posts:', errorData.error)
-        }
-      } catch (error) {
-        console.error('Error:', error)
-      }
+    if (data) {
+      setAuthor({ id: data.id, username: data.username } as User)
+      setPosts(data.posts)
     }
+  }, [params.username])
 
+  const handleDeletePost = async (id: number): Promise<void> => {
+    await deletePost(id, handleFetchPosts)
+  }
+
+  useEffect(() => {
     if (currentUser) {
-      fetchPosts()
+      handleFetchPosts()
     }
-  }, [currentUser, params.username])
+  }, [currentUser, params.username, handleFetchPosts])
 
   return (
     <div className="flex flex-row min-h-screen justify-between p-24 divide-x divide-gray-300">
@@ -59,11 +47,13 @@ const Blog = () => {
         {posts.map((post) => (
           <BlogPost
             key={post.id}
+            id={post.id}
             currentUserId={currentUser?.id as number}
             userId={author.id}
             username={author.username}
             title={post.title}
             content={post.content}
+            onDelete={handleDeletePost}
           />
         ))}
       </div>

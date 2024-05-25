@@ -25,12 +25,13 @@ export const GET = async (
     )
 
     return NextResponse.json({
-      author: user,
+      id: user.id,
+      username: user.username,
       posts,
     })
   } catch (error) {
-    console.error('Error fetching posts:', error)
+    console.error('Error fetching user:', error)
 
-    return NextResponse.json({ error: 'Error fetching posts' }, { status: 500 })
+    return NextResponse.json({ error: 'Error fetching user' }, { status: 500 })
   }
 }

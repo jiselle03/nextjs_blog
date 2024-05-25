@@ -2,44 +2,32 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/providers/AuthProvider'
+import { fetchPosts, deletePost } from '@/utils/posts'
+import { Post } from '@/types'
 import BlogPost from '@/components/blog-post'
 import NavBar from '@/components/nav-bar'
 import SearchBar from '@/components/search-bar'
-import { Post } from '@/types'
 
 const Dashboard = () => {
-  const { currentUser, fetchCurrentUser } = useAuth()
+  const { currentUser } = useAuth()
 
   const [posts, setPosts] = useState<Post[]>([])
 
-  const fetchPosts = async () => {
-    try {
-      const response = await fetch('/api/posts', {
-        method: 'GET',
-      })
+  const handleFetchPosts = async (): Promise<void> => {
+    const data = await fetchPosts()
 
-      if (response.ok) {
-        const data = await response.json()
-
-        setPosts(data)
-      } else {
-        const errorData = await response.json()
-
-        console.error('Failed to fetch posts:', errorData.error)
-      }
-    } catch (error) {
-      console.error('Error:', error)
+    if (data) {
+      setPosts(data)
     }
   }
 
-  useEffect(() => {
-    fetchCurrentUser()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const handleDeletePost = async (id: number): Promise<void> => {
+    await deletePost(id, handleFetchPosts)
+  }
 
   useEffect(() => {
     if (currentUser) {
-      fetchPosts()
+      handleFetchPosts()
     }
   }, [currentUser])
 
@@ -53,11 +41,13 @@ const Dashboard = () => {
         {posts.map((post) => (
           <BlogPost
             key={post.id}
+            id={post.id}
             currentUserId={currentUser?.id as number}
             userId={post.author.id}
             username={post.author?.username}
             title={post.title}
             content={post.content}
+            onDelete={handleDeletePost}
           />
         ))}
       </div>
