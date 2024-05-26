@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { IoHome, IoSettings, IoAddSharp } from 'react-icons/io5'
+import { IoHome, IoSettings, IoAddSharp, IoLogInOutline } from 'react-icons/io5'
 import { iconClassNames } from '@/styles/classNames'
 
 const NavBar = () => {
@@ -35,7 +35,7 @@ const NavBar = () => {
 
         router.push('/login')
       } else {
-        console.log('Error logging out')
+        console.error('Error logging out')
       }
     } catch (error) {
       console.error('Error:', error)
@@ -65,9 +65,10 @@ const NavBar = () => {
         New
       </Link>
       <p
-        className="cursor-pointer p-2 hover:bg-gray-300"
+        className="cursor-pointer p-2 flex items-center gap-1.5 hover:bg-gray-300"
         onClick={handleLogout}
       >
+        <IoLogInOutline className={iconClassNames({})} />
         Log Out
       </p>
     </nav>
