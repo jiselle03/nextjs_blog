@@ -1,22 +1,38 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, useCallback } from 'react'
+import { useRouter, useParams } from 'next/navigation'
+import { fetchPost, updatePost } from '@/utils/posts'
 import { borderClassNames } from '@/styles/classNames'
-import { createPost } from '@/utils/posts'
 
-const New = () => {
+const Edit = () => {
   const router = useRouter()
+  const params = useParams()
 
   const [title, setTitle] = useState<string>('')
   const [content, setContent] = useState<string>('')
   const [tags, setTags] = useState<string>('')
 
+  const id = Number(params.id)
+
+  const handleFetchPost = useCallback(async (): Promise<void> => {
+    const post = await fetchPost(id)
+
+    if (post) {
+      setTitle(post.title)
+      setContent(post.content)
+      setTags(post.tags.join(', '))
+    } else {
+      router.push('/dashboard')
+    }
+  }, [id, router])
+
   const handleSubmit = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault()
 
-    await createPost(
+    await updatePost(
       {
+        id,
         title,
         content,
         tags: tags.split(',').map((tag) => tag.trim()),
@@ -25,9 +41,13 @@ const New = () => {
     )
   }
 
+  useEffect(() => {
+    handleFetchPost()
+  }, [id, handleFetchPost])
+
   return (
     <div className="min-h-screen p-24">
-      <h3 className="w-36 font-medium">New Post</h3>
+      <h3 className="w-36 font-medium">Edit Post</h3>
       <form onSubmit={handleSubmit}>
         <div className="flex gap-1.5">
           <label htmlFor="title">Title</label>
@@ -72,7 +92,7 @@ const New = () => {
             className={`py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600`}
             type="submit"
           >
-            Post
+            Update
           </button>
         </div>
       </form>
@@ -80,4 +100,4 @@ const New = () => {
   )
 }
 
-export default New
+export default Edit

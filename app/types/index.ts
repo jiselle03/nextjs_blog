@@ -6,6 +6,8 @@ export interface User {
   updatedAt: Date
 }
 
+export type UserPosts = User & { posts: Post[] }
+
 export interface Post {
   id: number
   title: string
@@ -20,3 +22,12 @@ export interface SessionData {
   username: string
   isLoggedIn: boolean
 }
+
+// Form
+export interface CreatePostForm {
+  title: string
+  content: string
+  tags: string[]
+}
+
+export type EditPostForm = CreatePostForm & { id: number }
