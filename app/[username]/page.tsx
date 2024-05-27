@@ -53,6 +53,7 @@ const Blog = () => {
             username={author.username}
             title={post.title}
             content={post.content}
+            tags={post.tags}
             onDelete={handleDeletePost}
           />
         ))}

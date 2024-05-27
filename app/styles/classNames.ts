@@ -5,6 +5,7 @@ interface StyleType {
 
 const Color = {
   light: 'gray-300',
+  medium: 'gray-500',
   dark: 'gray-800',
   red: 'red-500',
 }
@@ -31,4 +32,10 @@ export const iconClassNames = ({
   return `cursor-pointer ${IconSize[size]} text-${Color[color]}`
 }
 
-export const borderClassNames = ({}) => `border border-${Color.light} rounded`
+export const borderClassNames = ({}) =>
+  `border border-${Color.light} rounded-lg`
+
+export const badgeClassNames = ({}) => `border rounded-2xl px-2 py-1`
+
+export const tagClassNames = ({}) =>
+  `cursor-pointer text-${Color.medium} text-xs`
