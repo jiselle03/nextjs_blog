@@ -33,6 +33,7 @@ const Register = () => {
     } catch (error) {
       console.error('Error:', error)
     }
+    // TODO: Log in user after create success or prompt user to log in
   }
 
   return (

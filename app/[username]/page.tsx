@@ -2,9 +2,11 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'next/navigation'
+import { IoAddSharp } from 'react-icons/io5'
 import { useAuth } from '@/providers/AuthProvider'
 import { fetchUserPosts, deletePost } from '@/utils/posts'
 import { User, Post } from '@/types'
+import { borderClassNames, iconClassNames } from '@/styles/classNames'
 import BlogPost from '@/components/blog-post'
 import NavBar from '@/components/nav-bar'
 import SearchBar from '@/components/search-bar'
@@ -29,6 +31,49 @@ const Blog = () => {
     await deletePost(id, handleFetchPosts)
   }
 
+  const followUser = async (): Promise<void> => {
+    try {
+      const response = await fetch('/api/users/follow', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ followingId: author.id }),
+      })
+
+      if (response.ok) {
+        await handleFetchPosts()
+      } else {
+        const errorData = await response.json()
+
+        console.error('Failed to follow user:', errorData.error)
+      }
+    } catch (error) {
+      console.error('Error:', error)
+    }
+  }
+
+  const unfollowUser = async (): Promise<void> => {
+    try {
+      const response = await fetch(`/api/users/follow/${author.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.ok) {
+        await handleFetchPosts()
+      } else {
+        const errorData = await response.json()
+
+        console.error('Failed to follow user:', errorData.error)
+      }
+    } catch (error) {
+      console.error('Error:', error)
+    }
+  }
+
   useEffect(() => {
     if (currentUser) {
       handleFetchPosts()
@@ -42,7 +87,17 @@ const Blog = () => {
 
       {/* Main Content */}
       <div className="flex-grow p-4">
-        <h3 className="font-semibold mb-4">{params.username}</h3>
+        <div className="flex items-center gap-1.5 mb-4">
+          <h3 className="font-semibold">{params.username}</h3>
+          {/* TODO: If current user is following this user, badge should say Following */}
+          <div
+            className={`cursor-pointer text-sm font-medium py-1 px-2 flex items-center gap-0.5 bg-white ${borderClassNames({})}`}
+            onClick={followUser}
+          >
+            Follow
+            <IoAddSharp className={iconClassNames({ size: 'x-small' })} />
+          </div>
+        </div>
 
         {posts.map((post) => (
           <BlogPost
