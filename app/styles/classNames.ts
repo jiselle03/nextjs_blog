@@ -13,6 +13,7 @@ const Color = {
 type ColorType = keyof typeof Color
 
 const IconSize = {
+  'x-small': 'h-3 w-3',
   small: 'h-5 w-5',
   large: 'h-6 w-6',
 }
