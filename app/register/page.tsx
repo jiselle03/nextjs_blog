@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { createUser } from '@/actions/users'
 
 const Register = () => {
   const router = useRouter()
@@ -10,30 +11,10 @@ const Register = () => {
   const [username, setUsername] = useState<string>('')
   const [email, setEmail] = useState<string>('')
 
-  const createUser = async (event: React.FormEvent) => {
+  const handleCreateUser = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault()
 
-    try {
-      const response = await fetch('/api/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, email }),
-      })
-
-      if (response.ok) {
-        await response.json()
-        router.push('/dashboard')
-      } else {
-        const errorData = await response.json()
-
-        console.error('Failed to create user:', errorData.error)
-      }
-    } catch (error) {
-      console.error('Error:', error)
-    }
-    // TODO: Log in user after create success or prompt user to log in
+    await createUser({ username, email }, () => router.push('/login'))
   }
 
   return (
@@ -42,7 +23,7 @@ const Register = () => {
         <h1 className="text-4xl font-bold text-center mb-6 text-black dark:text-white">
           Register
         </h1>
-        <form className="space-y-6" onSubmit={createUser}>
+        <form className="space-y-6" onSubmit={handleCreateUser}>
           <div>
             <label
               htmlFor="username"

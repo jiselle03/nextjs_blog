@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { borderClassNames } from '@/styles/classNames'
-import { createPost } from '@/utils/posts'
+import { createPost } from '@/actions/posts'
 
 const New = () => {
   const router = useRouter()
