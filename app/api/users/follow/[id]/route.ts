@@ -8,11 +8,6 @@ export const DELETE = async (
   _req: NextRequest,
   { params }: { params: { id: string } },
 ) => {
-  const session = await getSession()
-  const followingId = Number(params.id)
-  const followerId = session.id
-  console.log(followingId, followerId)
-
   try {
     const session = await getSession()
 

@@ -24,6 +24,11 @@ export interface SessionData {
 }
 
 // Form
+export interface CreateUserForm {
+  email: string
+  username: string
+}
+
 export interface CreatePostForm {
   title: string
   content: string

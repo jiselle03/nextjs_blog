@@ -9,6 +9,7 @@ import React, {
   useEffect,
 } from 'react'
 import { useRouter } from 'next/navigation'
+import { fetchCurrentUser } from '@/actions/users'
 import { User } from '@/types'
 
 interface AuthContextType {
@@ -37,42 +38,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const [currentUser, setCurrentUser] = useState<User | null>(null)
 
-  const fetchCurrentUser = useCallback(async () => {
-    try {
-      const response = await fetch('/api/users', {
-        method: 'GET',
-      })
+  const handleFetchCurrentUser = useCallback(async () => {
+    const user = await fetchCurrentUser()
 
-      if (response.ok) {
-        const data = await response.json()
-
-        if (!data.id) {
-          router.push('/login')
-
-          return
-        }
-
-        setCurrentUser(data)
-      } else {
-        const errorData = await response.json()
-
-        console.error('Failed to fetch current user:', errorData.error)
-
-        router.push('/login')
-      }
-    } catch (error) {
-      console.error('Error:', error)
-
+    if (!user?.id) {
       router.push('/login')
+
+      return
     }
+
+    setCurrentUser(user)
   }, [router])
 
   useEffect(() => {
-    fetchCurrentUser()
-  }, [fetchCurrentUser])
+    handleFetchCurrentUser()
+  }, [handleFetchCurrentUser])
 
   return (
-    <AuthContext.Provider value={{ currentUser, fetchCurrentUser }}>
+    <AuthContext.Provider
+      value={{
+        currentUser,
+        fetchCurrentUser: handleFetchCurrentUser,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )

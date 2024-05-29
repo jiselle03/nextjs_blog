@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/providers/AuthProvider'
-import { fetchPosts, deletePost } from '@/utils/posts'
+import { fetchPosts, deletePost } from '@/actions/posts'
 import { Post } from '@/types'
 import BlogPost from '@/components/blog-post'
 import NavBar from '@/components/nav-bar'

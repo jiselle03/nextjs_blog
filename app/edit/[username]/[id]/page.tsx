@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import { fetchPost, updatePost } from '@/utils/posts'
+import { fetchPost, updatePost } from '@/actions/posts'
 import { borderClassNames } from '@/styles/classNames'
 
 const Edit = () => {
