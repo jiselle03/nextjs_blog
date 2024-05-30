@@ -23,7 +23,7 @@ export const POST = async (req: NextRequest) => {
       )
     }
 
-    const existingFollow = await prisma.follows.findUnique({
+    const existingFollow = await prisma.follow.findUnique({
       where: {
         followerId_followingId: {
           followerId,
@@ -39,7 +39,7 @@ export const POST = async (req: NextRequest) => {
       )
     }
 
-    await prisma.follows.create({
+    await prisma.follow.create({
       data: {
         followerId,
         followingId,

@@ -28,7 +28,9 @@ const Login = () => {
 
         router.push('/dashboard')
       } else {
-        console.log('Error logging in')
+        const errorData = await response.json()
+
+        console.error('Failed to log in:', errorData.error)
       }
     } catch (error) {
       console.error('Error:', error)
