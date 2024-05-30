@@ -12,76 +12,102 @@ import {
   IoHeartOutline,
   IoHeart,
 } from 'react-icons/io5'
+import { formatDateTime } from '@/utils/datetime'
+import { Post, User } from '@/types'
 import {
   iconClassNames,
   borderClassNames,
   tagClassNames,
   badgeClassNames,
+  Color,
 } from '@/styles/classNames'
 
 type BlogPostProps = {
-  id: number
   currentUserId: number
-  userId: number
-  username: string
-  title: string
-  content: string
-  tags: string[]
+  post: Post
+  author: User
   onDelete: (id: number) => Promise<void>
+  onUnfollow: (id: number) => Promise<void>
 }
 
 const BlogPost = ({
-  id,
   currentUserId,
-  userId,
-  username,
-  title,
-  content,
-  tags,
+  post,
+  author,
   onDelete,
+  onUnfollow,
 }: BlogPostProps) => {
   const router = useRouter()
 
   const [liked, setLiked] = useState<boolean>(false)
+  const [showInfo, setShowInfo] = useState<boolean>(false)
 
   const toggleLike = (): void => {
     setLiked(!liked)
   }
 
-  const onEdit = (): void => {
-    router.push(`/edit/${username}/${id}`)
+  const toggleShowInfo = (): void => {
+    setShowInfo(!showInfo)
   }
+
+  const onEdit = (): void => {
+    router.push(`/edit/${author.username}/${post.id}`)
+  }
+
+  const isCurrentUser: boolean = currentUserId === author.id
 
   return (
     <div className={`p-4 mb-4 bg-white ${borderClassNames({})}`}>
       <div className="flex justify-between items-center border-b border-gray-300 pb-4">
         <Link
-          href={`/${username}`}
+          href={`/${author.username}`}
           className="cursor-pointer flex items-center gap-1.5 text-gray-800 hover:text-gray-500"
         >
           <IoPerson className={iconClassNames({})} />
-          {username}
+          {author.username}
         </Link>
-        <div className="cursor-pointer">
-          <IoEllipsisHorizontal className={iconClassNames({})} />
+        <div className="cursor-pointer relative">
+          <IoEllipsisHorizontal
+            className={iconClassNames({})}
+            onClick={toggleShowInfo}
+          />
+          {showInfo && (
+            <div
+              className={`absolute top-full right-0 w-48 p-2 text-center text-sm bg-white ${borderClassNames({})}`}
+            >
+              <div className={`pb-2 text-xs border-b border-${Color.light}`}>
+                {formatDateTime(post.createdAt)}
+              </div>
+              {/* TODO: Add copy link action */}
+              <div className="font-medium pt-2">Copy link</div>
+              {!isCurrentUser && (
+                <div
+                  className="font-medium"
+                  onClick={() => onUnfollow(author.id)}
+                >
+                  Unfollow @{author.username}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
       <div className="pt-4">
-        <h3>{title}</h3>
-        <p>{content}</p>
+        <h3>{post.title}</h3>
+        <p>{post.content}</p>
       </div>
       <div className="pt-4 flex gap-1.5">
-        {tags.map((tag) => (
+        {post.tags.map((tag) => (
           <div key={tag} className={tagClassNames({})}>
             #{tag}
           </div>
         ))}
       </div>
-      {userId === currentUserId && (
+      {isCurrentUser && (
         <div className="py-4 flex justify-end items-center gap-1.5 border-b border-gray-300">
           <IoTrash
             className={iconClassNames({})}
-            onClick={() => onDelete(id)}
+            onClick={() => onDelete(post.id)}
           />
           <IoPencil className={iconClassNames({})} onClick={onEdit} />
         </div>
