@@ -21,11 +21,11 @@ model User {
   updatedAt       DateTime @updatedAt
   posts           Post[]
 
-  followers Follows[] @relation("followers")
-  following Follows[] @relation("following")
+  followers Follow[] @relation("followers")
+  following Follow[] @relation("following")
 }
 
-model Follows {
+model Follow {
   followerId  Int
   followingId Int
 

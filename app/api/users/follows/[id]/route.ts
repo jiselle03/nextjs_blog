@@ -4,6 +4,42 @@ import { getSession } from '@/utils/cookies'
 
 const prisma = new PrismaClient()
 
+export const GET = async (
+  _req: NextRequest,
+  { params }: { params: { id: string } },
+) => {
+  try {
+    const session = await getSession()
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const followerId = Number(session.id)
+    const followingId = Number(params.id)
+
+    const followRecord = await prisma.follow.findUnique({
+      where: {
+        followerId_followingId: {
+          followerId,
+          followingId,
+        },
+      },
+    })
+
+    const isFollowing = !!followRecord
+
+    return NextResponse.json(isFollowing, { status: 201 })
+  } catch (error) {
+    console.error('Error:', error)
+
+    return NextResponse.json(
+      { error: 'An error occurred while checking follow record.' },
+      { status: 500 },
+    )
+  }
+}
+
 export const DELETE = async (
   _req: NextRequest,
   { params }: { params: { id: string } },
@@ -14,7 +50,7 @@ export const DELETE = async (
     const followingId = Number(params.id)
     const followerId = session.id
 
-    const existingFollow = await prisma.follows.findUnique({
+    const existingFollow = await prisma.follow.findUnique({
       where: {
         followerId_followingId: {
           followerId,
@@ -40,7 +76,7 @@ export const DELETE = async (
       )
     }
 
-    await prisma.follows.delete({
+    await prisma.follow.delete({
       where: {
         followerId_followingId: {
           followerId,
