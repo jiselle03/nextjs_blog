@@ -95,14 +95,11 @@ const Blog = () => {
         {posts.map((post) => (
           <BlogPost
             key={post.id}
-            id={post.id}
             currentUserId={currentUser?.id as number}
-            userId={author.id}
-            username={author.username}
-            title={post.title}
-            content={post.content}
-            tags={post.tags}
+            author={author}
+            post={post}
             onDelete={handleDeletePost}
+            onUnfollow={handleUnfollowUser}
           />
         ))}
       </div>

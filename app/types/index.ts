@@ -14,6 +14,7 @@ export interface Post {
   content: string
   tags: string[]
   author: User
+  createdAt: string
 }
 
 export interface SessionData {

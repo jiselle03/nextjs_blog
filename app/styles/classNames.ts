@@ -3,7 +3,7 @@ interface StyleType {
   size?: IconSizeType
 }
 
-const Color = {
+export const Color = {
   light: 'gray-300',
   medium: 'gray-500',
   dark: 'gray-800',
