@@ -1,10 +1,24 @@
+'use client'
+
+import { useEffect } from 'react'
 import { IoPencil } from 'react-icons/io5'
 import { iconClassNames, borderClassNames } from '@/styles/classNames'
+import { useAuth } from '@/providers/AuthProvider'
 import NavBar from '@/components/nav-bar'
 import SearchBar from '@/components/search-bar'
 
 const Dashboard = () => {
-  const items = ['Email', 'Password', 'Language']
+  const { currentUser, fetchCurrentUser } = useAuth()
+
+  const items = [
+    { title: 'Email', content: currentUser?.email },
+    { title: 'Password', content: 'Password' },
+    { title: 'Language', content: 'English' },
+  ]
+
+  useEffect(() => {
+    fetchCurrentUser()
+  }, [fetchCurrentUser])
 
   return (
     <div className="flex flex-row min-h-screen justify-between p-24 divide-x divide-gray-300">
@@ -20,11 +34,11 @@ const Dashboard = () => {
           <div className="divide-y divide-gray-300">
             {items.map((item) => (
               <div
-                key={item}
+                key={item.title}
                 className="py-4 flex justify-between items-center"
               >
-                <h3 className="w-36 font-medium">{item}</h3>
-                <p className="flex-grow">Text</p>
+                <h3 className="w-36 font-medium">{item.title}</h3>
+                <p className="flex-grow">{item.content}</p>
                 <IoPencil className={iconClassNames({})} />
               </div>
             ))}
