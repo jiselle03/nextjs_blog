@@ -10,10 +10,12 @@ export const GET = async (
 ) => {
   try {
     const postId = Number(params.id as string)
+    console.log(postId)
     const post = await prisma.post.findUnique({
       where: { id: postId },
       include: { author: true },
     })
+    console.log(post)
 
     if (!post) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 })
