@@ -41,6 +41,7 @@ const BlogPost = ({
 
   const [liked, setLiked] = useState<boolean>(false)
   const [showInfo, setShowInfo] = useState<boolean>(false)
+  const [linkCopied, setLinkCopied] = useState<boolean>(false)
 
   const toggleLike = (): void => {
     setLiked(!liked)
@@ -48,10 +49,24 @@ const BlogPost = ({
 
   const toggleShowInfo = (): void => {
     setShowInfo(!showInfo)
+
+    if (!showInfo) setLinkCopied(false)
   }
 
   const onEdit = (): void => {
     router.push(`/edit/${author.username}/${post.id}`)
+  }
+
+  const onCopyLink = async (): Promise<void> => {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL
+    const link = `${baseUrl}/${author.username}/${post.id}`
+
+    try {
+      await navigator.clipboard.writeText(link)
+      setLinkCopied(true)
+    } catch (error) {
+      console.error('Failed to copy link:', error)
+    }
   }
 
   const isCurrentUser: boolean = currentUserId === author.id
@@ -78,8 +93,13 @@ const BlogPost = ({
               <div className={`pb-2 text-xs border-b border-${Color.light}`}>
                 {formatDateTime(post.createdAt)}
               </div>
-              {/* TODO: Add copy link action */}
-              <div className="font-medium pt-2">Copy link</div>
+              {linkCopied ? (
+                <div className="font-medium pt-2">Link copied!</div>
+              ) : (
+                <div className="font-medium pt-2" onClick={onCopyLink}>
+                  Copy link
+                </div>
+              )}
               {!isCurrentUser && (
                 <div
                   className="font-medium"

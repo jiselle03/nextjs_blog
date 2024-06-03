@@ -12,7 +12,7 @@ import BlogPost from '@/components/blog-post'
 import NavBar from '@/components/nav-bar'
 import SearchBar from '@/components/search-bar'
 
-const Blog = () => {
+const UserBlog = () => {
   const params = useParams<{ username: string }>()
   const { currentUser } = useAuth()
 
@@ -110,4 +110,4 @@ const Blog = () => {
   )
 }
 
-export default Blog
+export default UserBlog
