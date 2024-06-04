@@ -98,8 +98,8 @@ const UserBlog = () => {
             currentUserId={currentUser?.id as number}
             author={author}
             post={post}
+            refetch={refetch}
             onDelete={handleDeletePost}
-            onUnfollow={handleUnfollowUser}
           />
         ))}
       </div>
