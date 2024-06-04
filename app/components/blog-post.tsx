@@ -1,7 +1,7 @@
 'use client'
 
+import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   IoPerson,
@@ -11,9 +11,11 @@ import {
   IoSend,
   IoHeartOutline,
   IoHeart,
+  IoAddSharp,
 } from 'react-icons/io5'
 import { formatDateTime } from '@/utils/datetime'
 import { Post, User } from '@/types'
+import { fetchIsFollowing, followUser, unfollowUser } from '@/actions/follows'
 import {
   iconClassNames,
   borderClassNames,
@@ -21,27 +23,31 @@ import {
   badgeClassNames,
   Color,
 } from '@/styles/classNames'
+import FollowButton from '@/components/follow-button'
 
 type BlogPostProps = {
   currentUserId: number
   post: Post
   author: User
+  allowFollow?: boolean
+  refetch: () => Promise<void>
   onDelete: (id: number) => Promise<void>
-  onUnfollow: (id: number) => Promise<void>
 }
 
 const BlogPost = ({
   currentUserId,
   post,
   author,
+  allowFollow,
+  refetch,
   onDelete,
-  onUnfollow,
 }: BlogPostProps) => {
   const router = useRouter()
 
   const [liked, setLiked] = useState<boolean>(false)
   const [showInfo, setShowInfo] = useState<boolean>(false)
   const [linkCopied, setLinkCopied] = useState<boolean>(false)
+  const [isFollowing, setIsFollowing] = useState<boolean>(false)
 
   const toggleLike = (): void => {
     setLiked(!liked)
@@ -69,18 +75,45 @@ const BlogPost = ({
     }
   }
 
+  const onTagClick = (tag: string): void => {
+    router.push(`/tagged/${tag}`)
+  }
+
+  const handleFollowUser = async (): Promise<void> => {
+    await followUser(author.id, refetch)
+  }
+
+  const handleUnfollowUser = async (): Promise<void> => {
+    await unfollowUser(author.id, refetch)
+  }
+
   const isCurrentUser: boolean = currentUserId === author.id
+
+  const handleFetchIsFollowing = useCallback(async (): Promise<void> => {
+    const data = await fetchIsFollowing(author.id)
+
+    setIsFollowing(!!data)
+  }, [author.id])
+
+  useEffect(() => {
+    if (allowFollow && author.id) {
+      handleFetchIsFollowing()
+    }
+  }, [allowFollow, author.id, handleFetchIsFollowing])
 
   return (
     <div className={`p-4 mb-4 bg-white ${borderClassNames({})}`}>
       <div className="flex justify-between items-center border-b border-gray-300 pb-4">
-        <Link
-          href={`/${author.username}`}
-          className="cursor-pointer flex items-center gap-1.5 text-gray-800 hover:text-gray-500"
-        >
-          <IoPerson className={iconClassNames({})} />
-          {author.username}
-        </Link>
+        <div className="flex items-center">
+          <Link
+            href={`/${author.username}`}
+            className="cursor-pointer flex items-center gap-1.5 text-gray-800 hover:text-gray-500"
+          >
+            <IoPerson className={iconClassNames({})} />
+            {author.username}
+          </Link>
+          {allowFollow && <FollowButton author={author} refetch={refetch} />}
+        </div>
         <div className="cursor-pointer relative">
           <IoEllipsisHorizontal
             className={iconClassNames({})}
@@ -103,7 +136,7 @@ const BlogPost = ({
               {!isCurrentUser && (
                 <div
                   className="font-medium"
-                  onClick={() => onUnfollow(author.id)}
+                  onClick={() => handleUnfollowUser()}
                 >
                   Unfollow @{author.username}
                 </div>
@@ -118,7 +151,11 @@ const BlogPost = ({
       </div>
       <div className="pt-4 flex gap-1.5">
         {post.tags.map((tag) => (
-          <div key={tag} className={tagClassNames({})}>
+          <div
+            key={tag}
+            className={tagClassNames({})}
+            onClick={() => onTagClick(tag)}
+          >
             #{tag}
           </div>
         ))}

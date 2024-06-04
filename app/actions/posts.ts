@@ -85,6 +85,35 @@ export const fetchUserPosts = async (
   }
 }
 
+// Fetch posts with specific tag
+export const fetchPostsWithTag = async (
+  tag: string,
+): Promise<Post[] | null> => {
+  if (!tag) return null
+
+  try {
+    const response = await fetch(`/api/posts/tagged/${tag}`, {
+      method: 'GET',
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+
+      return data as Post[]
+    } else {
+      const errorData = await response.json()
+
+      console.error('Failed to fetch posts:', errorData.error)
+
+      return null
+    }
+  } catch (error) {
+    console.error('Error:', error)
+
+    return null
+  }
+}
+
 // MUTATIONS
 
 // Create post
@@ -142,7 +171,7 @@ export const updatePost = async (
     if (!response.ok) {
       const errorData = await response.json()
 
-      console.error('Failed to create post:', errorData.error)
+      console.error('Failed to update post:', errorData.error)
 
       return
     }
