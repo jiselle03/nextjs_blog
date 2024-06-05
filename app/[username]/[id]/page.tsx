@@ -2,14 +2,13 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'next/navigation'
-import { IoAddSharp } from 'react-icons/io5'
 import { useAuth } from '@/providers/AuthProvider'
 import { fetchPost, deletePost } from '@/actions/posts'
-import { fetchIsFollowing, followUser, unfollowUser } from '@/actions/follows'
+import { fetchIsFollowing } from '@/actions/follows'
 import { Post } from '@/types'
-import { borderClassNames, iconClassNames } from '@/styles/classNames'
 import BlogPost from '@/components/blog-post'
 import NavBar from '@/components/nav-bar'
+import FollowButton from '@/components/follow-button'
 import SearchBar from '@/components/search-bar'
 
 const UserBlogPost = () => {
@@ -18,7 +17,11 @@ const UserBlogPost = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [post, setPost] = useState<Post>({} as Post)
-  const [isFollowing, setIsFollowing] = useState<boolean>(false)
+  const [isFollowing, setIsFollowing] = useState<boolean | null>(null)
+
+  const onFollowingUpdate = useCallback((following: boolean | null) => {
+    setIsFollowing(following)
+  }, [])
 
   const handleFetchPost = useCallback(async (): Promise<void> => {
     setIsLoading(true)
@@ -30,7 +33,7 @@ const UserBlogPost = () => {
       if (!!post.author?.id) {
         const followingData = await fetchIsFollowing(post.author?.id)
 
-        setIsFollowing(!!followingData)
+        setIsFollowing(followingData)
       }
     }
 
@@ -43,18 +46,6 @@ const UserBlogPost = () => {
     await deletePost(id, handleFetchPost)
 
     setIsLoading(false)
-  }
-
-  const handleFollowUser = async (): Promise<void> => {
-    await followUser(post.author.id, refetch)
-  }
-
-  const handleUnfollowUser = async (): Promise<void> => {
-    await unfollowUser(post.author.id, refetch)
-  }
-
-  const refetch = async (): Promise<void> => {
-    await handleFetchPost()
   }
 
   useEffect(() => {
@@ -77,22 +68,11 @@ const UserBlogPost = () => {
         <div className="flex-grow p-4">
           <div className="flex items-center gap-1.5 mb-4">
             <h3 className="font-semibold">{params.username}</h3>
-            {isFollowing ? (
-              <div
-                className={`cursor-pointer text-sm font-medium py-1 px-2 flex items-center gap-0.5 bg-white ${borderClassNames({})}`}
-                onClick={handleUnfollowUser}
-              >
-                Following
-              </div>
-            ) : (
-              <div
-                className={`cursor-pointer text-sm font-medium py-1 px-2 flex items-center gap-0.5 bg-white ${borderClassNames({})}`}
-                onClick={handleFollowUser}
-              >
-                Follow
-                <IoAddSharp className={iconClassNames({ size: 'x-small' })} />
-              </div>
-            )}
+            <FollowButton
+              author={post.author}
+              initialIsFollowing={isFollowing}
+              onFollowingUpdate={onFollowingUpdate}
+            />
           </div>
 
           <BlogPost
@@ -100,8 +80,9 @@ const UserBlogPost = () => {
             currentUserId={currentUser?.id as number}
             author={post.author}
             post={post}
-            refetch={refetch}
+            initialIsFollowing={isFollowing}
             onDelete={handleDeletePost}
+            onFollowingUpdate={onFollowingUpdate}
           />
         </div>
       ) : (

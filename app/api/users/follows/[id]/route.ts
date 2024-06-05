@@ -18,6 +18,10 @@ export const GET = async (
     const followerId = Number(session.id)
     const followingId = Number(params.id)
 
+    if (followerId === followingId) {
+      return NextResponse.json(null, { status: 201 })
+    }
+
     const followRecord = await prisma.follow.findUnique({
       where: {
         followerId_followingId: {
