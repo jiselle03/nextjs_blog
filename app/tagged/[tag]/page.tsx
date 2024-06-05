@@ -41,7 +41,7 @@ const PostsWithTag = () => {
       {/* Main Content */}
       <div className="flex-grow p-4">
         <div className="flex items-center gap-1.5 mb-4">
-          <h3 className="font-semibold">{params.tag}</h3>
+          <h3 className="font-semibold">#{params.tag}</h3>
         </div>
 
         {posts.map((post) => (
@@ -51,7 +51,6 @@ const PostsWithTag = () => {
             author={post.author}
             post={post}
             allowFollow={true}
-            refetch={handleFetchPosts}
             onDelete={handleDeletePost}
           />
         ))}

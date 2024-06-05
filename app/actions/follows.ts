@@ -12,7 +12,7 @@ export const fetchIsFollowing = async (
     if (response.ok) {
       const data = await response.json()
 
-      return data as boolean
+      return data as boolean | null
     } else {
       const errorData = await response.json()
 

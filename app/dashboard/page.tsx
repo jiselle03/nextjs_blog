@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/providers/AuthProvider'
 import { fetchPosts, deletePost } from '@/actions/posts'
-import { unfollowUser } from '@/actions/follows'
 import { Post } from '@/types'
 import BlogPost from '@/components/blog-post'
 import NavBar from '@/components/nav-bar'
@@ -26,10 +25,6 @@ const Dashboard = () => {
     await deletePost(id, handleFetchPosts)
   }
 
-  const handleUnfollowUser = async (id: number): Promise<void> => {
-    await unfollowUser(id, handleFetchPosts)
-  }
-
   useEffect(() => {
     if (currentUser) {
       handleFetchPosts()
@@ -49,7 +44,6 @@ const Dashboard = () => {
             currentUserId={currentUser?.id as number}
             post={post}
             author={post.author}
-            refetch={handleFetchPosts}
             onDelete={handleDeletePost}
           />
         ))}

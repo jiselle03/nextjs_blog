@@ -11,11 +11,10 @@ import {
   IoSend,
   IoHeartOutline,
   IoHeart,
-  IoAddSharp,
 } from 'react-icons/io5'
 import { formatDateTime } from '@/utils/datetime'
 import { Post, User } from '@/types'
-import { fetchIsFollowing, followUser, unfollowUser } from '@/actions/follows'
+import { fetchIsFollowing, unfollowUser } from '@/actions/follows'
 import {
   iconClassNames,
   borderClassNames,
@@ -30,8 +29,9 @@ type BlogPostProps = {
   post: Post
   author: User
   allowFollow?: boolean
-  refetch: () => Promise<void>
+  initialIsFollowing?: boolean | null
   onDelete: (id: number) => Promise<void>
+  onFollowingUpdate?: (following: boolean | null) => void
 }
 
 const BlogPost = ({
@@ -39,15 +39,16 @@ const BlogPost = ({
   post,
   author,
   allowFollow,
-  refetch,
+  initialIsFollowing,
   onDelete,
+  onFollowingUpdate,
 }: BlogPostProps) => {
   const router = useRouter()
 
   const [liked, setLiked] = useState<boolean>(false)
   const [showInfo, setShowInfo] = useState<boolean>(false)
   const [linkCopied, setLinkCopied] = useState<boolean>(false)
-  const [isFollowing, setIsFollowing] = useState<boolean>(false)
+  const [isFollowing, setIsFollowing] = useState<boolean | null>(null)
 
   const toggleLike = (): void => {
     setLiked(!liked)
@@ -79,32 +80,31 @@ const BlogPost = ({
     router.push(`/tagged/${tag}`)
   }
 
-  const handleFollowUser = async (): Promise<void> => {
-    await followUser(author.id, refetch)
-  }
+  const handleFetchIsFollowing = useCallback(async (): Promise<void> => {
+    const data = await fetchIsFollowing(author.id)
+
+    setIsFollowing(data)
+    onFollowingUpdate?.(data)
+  }, [author.id, onFollowingUpdate])
 
   const handleUnfollowUser = async (): Promise<void> => {
-    await unfollowUser(author.id, refetch)
+    await unfollowUser(author.id, handleFetchIsFollowing)
   }
 
   const isCurrentUser: boolean = currentUserId === author.id
 
-  const handleFetchIsFollowing = useCallback(async (): Promise<void> => {
-    const data = await fetchIsFollowing(author.id)
-
-    setIsFollowing(!!data)
-  }, [author.id])
+  useEffect(() => {
+    handleFetchIsFollowing()
+  }, [handleFetchIsFollowing])
 
   useEffect(() => {
-    if (allowFollow && author.id) {
-      handleFetchIsFollowing()
-    }
-  }, [allowFollow, author.id, handleFetchIsFollowing])
+    setIsFollowing(initialIsFollowing || null)
+  }, [initialIsFollowing])
 
   return (
     <div className={`p-4 mb-4 bg-white ${borderClassNames({})}`}>
       <div className="flex justify-between items-center border-b border-gray-300 pb-4">
-        <div className="flex items-center">
+        <div className="flex items-center gap-1.5">
           <Link
             href={`/${author.username}`}
             className="cursor-pointer flex items-center gap-1.5 text-gray-800 hover:text-gray-500"
@@ -112,7 +112,12 @@ const BlogPost = ({
             <IoPerson className={iconClassNames({})} />
             {author.username}
           </Link>
-          {allowFollow && <FollowButton author={author} refetch={refetch} />}
+          {allowFollow && onFollowingUpdate && (
+            <FollowButton
+              author={author}
+              onFollowingUpdate={onFollowingUpdate}
+            />
+          )}
         </div>
         <div className="cursor-pointer relative">
           <IoEllipsisHorizontal
@@ -133,7 +138,7 @@ const BlogPost = ({
                   Copy link
                 </div>
               )}
-              {!isCurrentUser && (
+              {!isCurrentUser && isFollowing && (
                 <div
                   className="font-medium"
                   onClick={() => handleUnfollowUser()}

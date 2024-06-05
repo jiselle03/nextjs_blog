@@ -8,31 +8,45 @@ import { borderClassNames, iconClassNames } from '@/styles/classNames'
 
 type FollowButtonProps = {
   author: User
-  refetch: () => Promise<void>
+  initialIsFollowing?: boolean | null
+  onFollowingUpdate: (following: boolean | null) => void
 }
 
-const FollowButton = ({ author, refetch }: FollowButtonProps) => {
-  const [isFollowing, setIsFollowing] = useState<boolean>(false)
+const FollowButton = ({
+  author,
+  initialIsFollowing,
+  onFollowingUpdate,
+}: FollowButtonProps) => {
+  const [isFollowing, setIsFollowing] = useState<boolean | null>(null)
 
   const handleFollowUser = async (): Promise<void> => {
-    await followUser(author.id, refetch)
+    await followUser(author.id, handleFetchIsFollowing)
   }
 
   const handleUnfollowUser = async (): Promise<void> => {
-    await unfollowUser(author.id, refetch)
+    await unfollowUser(author.id, handleFetchIsFollowing)
   }
 
   const handleFetchIsFollowing = useCallback(async (): Promise<void> => {
-    const data = await fetchIsFollowing(author.id)
+    if (author.id) {
+      const data = await fetchIsFollowing(author.id)
 
-    setIsFollowing(!!data)
-  }, [author.id])
+      setIsFollowing(data)
+      onFollowingUpdate(data)
+    }
+  }, [author.id, onFollowingUpdate])
 
   useEffect(() => {
-    if (author.id) {
-      handleFetchIsFollowing()
+    handleFetchIsFollowing()
+  }, [handleFetchIsFollowing])
+
+  useEffect(() => {
+    if (initialIsFollowing !== undefined) {
+      setIsFollowing(initialIsFollowing)
     }
-  }, [author.id, handleFetchIsFollowing])
+  }, [initialIsFollowing])
+
+  if (isFollowing === null) return
 
   return isFollowing ? (
     <div
