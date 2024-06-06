@@ -102,7 +102,7 @@ const BlogPost = ({
   }, [initialIsFollowing])
 
   return (
-    <div className={`p-4 mb-4 bg-white ${borderClassNames({})}`}>
+    <div className={`p-4 mb-4 bg-white ${borderClassNames({ size: 'large' })}`}>
       <div className="flex justify-between items-center border-b border-gray-300 pb-4">
         <div className="flex items-center gap-1.5">
           <Link
@@ -126,7 +126,7 @@ const BlogPost = ({
           />
           {showInfo && (
             <div
-              className={`absolute top-full right-0 w-48 p-2 text-center text-sm bg-white ${borderClassNames({})}`}
+              className={`absolute top-full right-0 w-48 p-2 text-center text-sm bg-white ${borderClassNames({ size: 'large' })}`}
             >
               <div className={`pb-2 text-xs border-b border-${Color.light}`}>
                 {formatDateTime(post.createdAt)}

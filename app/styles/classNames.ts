@@ -3,6 +3,10 @@ interface StyleType {
   size?: IconSizeType
 }
 
+interface BorderType {
+  size?: SizeType
+}
+
 export const Color = {
   light: 'gray-300',
   medium: 'gray-500',
@@ -20,6 +24,14 @@ const IconSize = {
 
 type IconSizeType = keyof typeof IconSize
 
+const Size = {
+  large: 'lg',
+  medium: 'md',
+  small: 'sm',
+}
+
+type SizeType = keyof typeof Size
+
 // Size
 export const iconSize = 'h-6 w-6'
 
@@ -33,8 +45,11 @@ export const iconClassNames = ({
   return `cursor-pointer ${IconSize[size]} text-${Color[color]}`
 }
 
-export const borderClassNames = ({}) =>
-  `border border-${Color.light} rounded-lg`
+export const borderClassNames = ({ size }: BorderType) => {
+  const sizeName = size ? `-${Size[size]}` : ''
+
+  return `border border-${Color.light} rounded${sizeName}`
+}
 
 export const badgeClassNames = ({}) => `border rounded-2xl px-2 py-1`
 
