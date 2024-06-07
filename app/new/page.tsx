@@ -25,6 +25,10 @@ const New = () => {
     )
   }
 
+  const onCancel = (): void => {
+    router.push('/dashboard')
+  }
+
   return (
     <div className="min-h-screen p-24">
       <h3 className="w-36 font-medium">New Post</h3>
@@ -65,6 +69,7 @@ const New = () => {
         <div className="flex items-center gap-1.5 mt-4">
           <button
             className={`py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-500 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600`}
+            onClick={onCancel}
           >
             Cancel
           </button>
