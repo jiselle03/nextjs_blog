@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { fetchPost, updatePost } from '@/actions/posts'
-import { borderClassNames } from '@/styles/classNames'
+import { borderClassNames, buttonClassNames } from '@/styles/classNames'
 
 const Edit = () => {
   const router = useRouter()
@@ -88,15 +88,12 @@ const Edit = () => {
         </div>
         <div className="flex items-center gap-1.5 mt-4">
           <button
-            className={`py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-500 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600`}
+            className={buttonClassNames({ type: 'cancel' })}
             onClick={onCancel}
           >
             Cancel
           </button>
-          <button
-            className={`py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600`}
-            type="submit"
-          >
+          <button className={buttonClassNames({})} type="submit">
             Update
           </button>
         </div>
