@@ -7,6 +7,11 @@ interface BorderType {
   size?: SizeType
 }
 
+interface ButtonType {
+  type?: 'cancel' | 'confirm'
+}
+
+// Color
 export const Color = {
   light: 'gray-300',
   medium: 'gray-500',
@@ -16,6 +21,14 @@ export const Color = {
 
 type ColorType = keyof typeof Color
 
+export const ButtonColor = {
+  gray: 'bg-gray-500',
+  'gray-hover': 'hover:bg-gray-800',
+  blue: 'bg-blue-600',
+  'blue-hover': 'hover:bg-blue-700',
+}
+
+// Size
 const IconSize = {
   'x-small': 'h-3 w-3',
   small: 'h-5 w-5',
@@ -32,17 +45,23 @@ const Size = {
 
 type SizeType = keyof typeof Size
 
-// Size
 export const iconSize = 'h-6 w-6'
 
 export const inputClassNames = ''
-export const buttonClassNames = ''
 
 export const iconClassNames = ({
   color = 'dark',
   size = 'small',
 }: StyleType): string => {
   return `cursor-pointer ${IconSize[size]} text-${Color[color]}`
+}
+
+export const buttonClassNames = ({ type = 'confirm' }: ButtonType) => {
+  const color = type === 'cancel' ? ButtonColor.gray : ButtonColor.blue
+  const hoverColor =
+    type === 'cancel' ? ButtonColor['gray-hover'] : ButtonColor['blue-hover']
+
+  return `py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${color} ${hoverColor} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600`
 }
 
 export const borderClassNames = ({ size }: BorderType) => {
