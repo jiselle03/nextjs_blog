@@ -9,6 +9,7 @@ interface BorderType {
 
 interface ButtonType {
   type?: 'cancel' | 'confirm'
+  width?: string
 }
 
 // Color
@@ -56,12 +57,15 @@ export const iconClassNames = ({
   return `cursor-pointer ${IconSize[size]} text-${Color[color]}`
 }
 
-export const buttonClassNames = ({ type = 'confirm' }: ButtonType) => {
+export const buttonClassNames = ({
+  type = 'confirm',
+  width = '',
+}: ButtonType) => {
   const color = type === 'cancel' ? ButtonColor.gray : ButtonColor.blue
   const hoverColor =
     type === 'cancel' ? ButtonColor['gray-hover'] : ButtonColor['blue-hover']
 
-  return `py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${color} ${hoverColor} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600`
+  return `py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${color} ${hoverColor} ${width} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600`
 }
 
 export const borderClassNames = ({ size }: BorderType) => {

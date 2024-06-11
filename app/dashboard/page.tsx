@@ -9,7 +9,7 @@ import NavBar from '@/components/nav-bar'
 import SearchBar from '@/components/search-bar'
 
 const Dashboard = () => {
-  const { currentUser } = useAuth()
+  const { currentUser, fetchCurrentUser } = useAuth()
 
   const [posts, setPosts] = useState<Post[]>([])
 
@@ -26,10 +26,12 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
-    if (currentUser) {
-      handleFetchPosts()
+    const fetchData = async (): Promise<void> => {
+      currentUser ? await handleFetchPosts() : await fetchCurrentUser()
     }
-  }, [currentUser])
+
+    fetchData()
+  }, [currentUser, fetchCurrentUser])
 
   return (
     <div className="flex flex-row min-h-screen justify-between p-24 divide-x divide-gray-300">

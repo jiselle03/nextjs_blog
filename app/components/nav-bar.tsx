@@ -29,10 +29,6 @@ const NavBar = () => {
       })
 
       if (response.ok) {
-        const data = await response.json()
-
-        console.log(`Logged out user ID: ${data.id}`)
-
         router.push('/login')
       } else {
         console.error('Error logging out')
