@@ -47,6 +47,7 @@ const Dashboard = () => {
             post={post}
             author={post.author}
             onDelete={handleDeletePost}
+            onFollowingUpdate={handleFetchPosts}
           />
         ))}
       </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
@@ -14,7 +14,7 @@ import {
 } from 'react-icons/io5'
 import { formatDateTime } from '@/utils/datetime'
 import { Post, User } from '@/types'
-import { fetchIsFollowing, unfollowUser } from '@/actions/follows'
+import { unfollowUser } from '@/actions/follows'
 import {
   iconClassNames,
   borderClassNames,
@@ -29,9 +29,8 @@ type BlogPostProps = {
   post: Post
   author: User
   allowFollow?: boolean
-  initialIsFollowing?: boolean | null
   onDelete: (id: number) => Promise<void>
-  onFollowingUpdate?: (following: boolean | null) => void
+  onFollowingUpdate: (following: boolean | null) => void
 }
 
 const BlogPost = ({
@@ -39,7 +38,6 @@ const BlogPost = ({
   post,
   author,
   allowFollow,
-  initialIsFollowing,
   onDelete,
   onFollowingUpdate,
 }: BlogPostProps) => {
@@ -48,7 +46,6 @@ const BlogPost = ({
   const [liked, setLiked] = useState<boolean>(false)
   const [showInfo, setShowInfo] = useState<boolean>(false)
   const [linkCopied, setLinkCopied] = useState<boolean>(false)
-  const [isFollowing, setIsFollowing] = useState<boolean | null>(null)
 
   const toggleLike = (): void => {
     setLiked(!liked)
@@ -80,26 +77,11 @@ const BlogPost = ({
     router.push(`/tagged/${tag}`)
   }
 
-  const handleFetchIsFollowing = useCallback(async (): Promise<void> => {
-    const data = await fetchIsFollowing(author.id)
-
-    setIsFollowing(data)
-    onFollowingUpdate?.(data)
-  }, [author.id, onFollowingUpdate])
-
   const handleUnfollowUser = async (): Promise<void> => {
-    await unfollowUser(author.id, handleFetchIsFollowing)
+    await unfollowUser(author.id, () => onFollowingUpdate(false))
   }
 
   const isCurrentUser: boolean = currentUserId === author.id
-
-  useEffect(() => {
-    handleFetchIsFollowing()
-  }, [handleFetchIsFollowing])
-
-  useEffect(() => {
-    setIsFollowing(initialIsFollowing || null)
-  }, [initialIsFollowing])
 
   return (
     <div className={`p-4 mb-4 bg-white ${borderClassNames({ size: 'large' })}`}>
@@ -115,6 +97,7 @@ const BlogPost = ({
           {allowFollow && onFollowingUpdate && (
             <FollowButton
               author={author}
+              initialIsFollowing={post.isFollowing}
               onFollowingUpdate={onFollowingUpdate}
             />
           )}
@@ -138,7 +121,7 @@ const BlogPost = ({
                   Copy link
                 </div>
               )}
-              {!isCurrentUser && isFollowing && (
+              {!isCurrentUser && post.isFollowing && (
                 <div
                   className="font-medium"
                   onClick={() => handleUnfollowUser()}

@@ -62,7 +62,9 @@ export const GET = async () => {
       include: { author: true },
     })
 
-    return NextResponse.json(posts)
+    return NextResponse.json(
+      posts.map((post) => ({ ...post, isFollowing: true })),
+    )
   } catch (error) {
     console.error('Error fetching posts:', error)
 

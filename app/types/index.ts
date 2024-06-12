@@ -15,6 +15,7 @@ export interface Post {
   tags: string[]
   author: User
   createdAt: string
+  isFollowing?: boolean | null
 }
 
 export interface SessionData {
