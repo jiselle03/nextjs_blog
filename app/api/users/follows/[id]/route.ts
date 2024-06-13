@@ -11,12 +11,18 @@ export const GET = async (
   try {
     const session = await getSession()
 
-    if (!session) {
+    console.log(session)
+
+    if (!session?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const followerId = Number(session.id)
     const followingId = Number(params.id)
+
+    if (isNaN(followerId) || isNaN(followingId)) {
+      return NextResponse.json({ error: 'Invalid IDs' }, { status: 400 })
+    }
 
     if (followerId === followingId) {
       return NextResponse.json(null, { status: 201 })

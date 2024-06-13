@@ -21,6 +21,7 @@ const UserBlogPost = () => {
 
   const onFollowingUpdate = useCallback((following: boolean | null) => {
     setIsFollowing(following)
+    setPost((post) => ({ ...post, isFollowing: following }))
   }, [])
 
   const handleFetchPost = useCallback(async (): Promise<void> => {
@@ -34,6 +35,7 @@ const UserBlogPost = () => {
         const followingData = await fetchIsFollowing(post.author?.id)
 
         setIsFollowing(followingData)
+        setPost((post) => ({ ...post, isFollowing: followingData }))
       }
     }
 
@@ -80,7 +82,6 @@ const UserBlogPost = () => {
             currentUserId={currentUser?.id as number}
             author={post.author}
             post={post}
-            initialIsFollowing={isFollowing}
             onDelete={handleDeletePost}
             onFollowingUpdate={onFollowingUpdate}
           />

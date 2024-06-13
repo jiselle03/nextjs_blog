@@ -5,9 +5,12 @@ export const fetchIsFollowing = async (
   followingId: number,
 ): Promise<boolean | null> => {
   try {
-    const response = await fetch(`/api/users/follows/${followingId}`, {
-      method: 'GET',
-    })
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/users/follows/${followingId}`,
+      {
+        method: 'GET',
+      },
+    )
 
     if (response.ok) {
       const data = await response.json()
@@ -56,7 +59,7 @@ export const followUser = async (
 // Unfollow user
 export const unfollowUser = async (
   followingId: number,
-  cb: () => Promise<void>,
+  cb: () => void,
 ): Promise<void> => {
   try {
     const response = await fetch(`/api/users/follows/${followingId}`, {
@@ -67,7 +70,7 @@ export const unfollowUser = async (
     })
 
     if (response.ok) {
-      await cb()
+      cb()
     } else {
       const errorData = await response.json()
 

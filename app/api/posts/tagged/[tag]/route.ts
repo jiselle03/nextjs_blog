@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
+import { fetchIsFollowing } from '@/actions/follows'
 
 const prisma = new PrismaClient()
 
@@ -17,7 +18,18 @@ export const GET = async (
       return NextResponse.json({ error: 'Posts not found' }, { status: 404 })
     }
 
-    return NextResponse.json(posts, { status: 200 })
+    const postsWithFollowStatus = await Promise.all(
+      posts.map(async (post) => {
+        const isFollowing = await fetchIsFollowing(post.author?.id)
+
+        return {
+          ...post,
+          isFollowing,
+        }
+      }),
+    )
+
+    return NextResponse.json(postsWithFollowStatus, { status: 200 })
   } catch (error) {
     console.error('Error fetching posts:', error)
 

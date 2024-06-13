@@ -52,6 +52,7 @@ const PostsWithTag = () => {
             post={post}
             allowFollow={true}
             onDelete={handleDeletePost}
+            onFollowingUpdate={handleFetchPosts}
           />
         ))}
       </div>
