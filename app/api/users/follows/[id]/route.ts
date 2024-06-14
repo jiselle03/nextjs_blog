@@ -11,8 +11,6 @@ export const GET = async (
   try {
     const session = await getSession()
 
-    console.log(session)
-
     if (!session?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }

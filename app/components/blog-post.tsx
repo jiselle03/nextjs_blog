@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
@@ -43,6 +43,8 @@ const BlogPost = ({
 }: BlogPostProps) => {
   const router = useRouter()
 
+  const infoBoxRef = useRef<HTMLDivElement>(null)
+
   const [liked, setLiked] = useState<boolean>(false)
   const [showInfo, setShowInfo] = useState<boolean>(false)
   const [linkCopied, setLinkCopied] = useState<boolean>(false)
@@ -81,6 +83,27 @@ const BlogPost = ({
     await unfollowUser(author.id, () => onFollowingUpdate(false))
   }
 
+  const handleClickOutside = (event: MouseEvent): void => {
+    if (
+      infoBoxRef.current &&
+      !infoBoxRef.current.contains(event.target as Node)
+    ) {
+      setShowInfo(false)
+    }
+  }
+
+  useEffect(() => {
+    if (showInfo) {
+      document.addEventListener('click', handleClickOutside)
+    } else {
+      document.removeEventListener('click', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside)
+    }
+  }, [showInfo])
+
   const isCurrentUser: boolean = currentUserId === author.id
 
   return (
@@ -109,6 +132,7 @@ const BlogPost = ({
           />
           {showInfo && (
             <div
+              ref={infoBoxRef}
               className={`absolute top-full right-0 w-48 p-2 text-center text-sm bg-white ${borderClassNames({ size: 'large' })}`}
             >
               <div className={`pb-2 text-xs border-b border-${Color.light}`}>
