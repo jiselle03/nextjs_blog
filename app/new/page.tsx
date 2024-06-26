@@ -32,37 +32,41 @@ const New = () => {
   return (
     <div className="min-h-screen p-24">
       <h3 className="w-36 font-medium">New Post</h3>
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={handleSubmit}
+        className={`${borderClassNames({ size: 'large' })} bg-white p-4 mt-2`}
+      >
         <div className="flex gap-1.5">
-          <label htmlFor="title">Title</label>
           <input
-            className={borderClassNames({})}
+            className={`${borderClassNames({ type: 'input' })} w-full text-2xl`}
             type="text"
             id="title"
             value={title}
+            placeholder="Title"
             onChange={(e) => setTitle(e.target.value)}
             maxLength={60}
             required
           />
         </div>
         <div className="mt-4 flex gap-1.5">
-          <label htmlFor="content">Content</label>
           <textarea
-            className={borderClassNames({})}
+            className={`border-none w-full`}
             id="content"
             value={content}
+            rows={10}
+            placeholder="What's on your mind?"
             onChange={(e) => setContent(e.target.value)}
             required
           />
         </div>
         <div className="mt-4 flex gap-1.5">
-          <label htmlFor="tags">Tags (comma separated)</label>
           <input
-            className={borderClassNames({})}
+            className={`${borderClassNames({ size: 'large' })} px-2 w-full`}
             type="text"
             id="tags"
             value={tags}
             onChange={(e) => setTags(e.target.value)}
+            placeholder="Tags (comma separated)"
             required
           />
         </div>
