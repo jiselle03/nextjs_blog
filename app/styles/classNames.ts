@@ -4,6 +4,7 @@ interface StyleType {
 }
 
 interface BorderType {
+  type?: 'main' | 'input'
   size?: SizeType
 }
 
@@ -68,8 +69,12 @@ export const buttonClassNames = ({
   return `py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${color} ${hoverColor} ${width} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600`
 }
 
-export const borderClassNames = ({ size }: BorderType) => {
+export const borderClassNames = ({ size, type = 'main' }: BorderType) => {
   const sizeName = size ? `-${Size[size]}` : ''
+
+  if (type === 'input') {
+    return `border-b-2 border-${Color.light}`
+  }
 
   return `border border-${Color.light} rounded${sizeName}`
 }
