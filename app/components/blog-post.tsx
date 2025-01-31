@@ -133,7 +133,7 @@ const BlogPost = ({
           {showInfo && (
             <div
               ref={infoBoxRef}
-              className={`absolute top-full right-0 w-48 p-2 text-center text-sm bg-white ${borderClassNames({ size: 'large' })}`}
+              className={`absolute top-full right-0 w-48 pt-2 pb-2 text-center text-sm bg-white ${borderClassNames({ size: 'large' })}`}
             >
               <div className={`pb-2 text-xs border-b border-${Color.light}`}>
                 {formatDateTime(post.createdAt)}
@@ -141,13 +141,16 @@ const BlogPost = ({
               {linkCopied ? (
                 <div className="font-medium pt-2">Link copied!</div>
               ) : (
-                <div className="font-medium pt-2" onClick={onCopyLink}>
+                <div
+                  className={`font-medium pt-2 pb-2 hover:bg-${Color.light}`}
+                  onClick={onCopyLink}
+                >
                   Copy link
                 </div>
               )}
               {!isCurrentUser && post.isFollowing && (
                 <div
-                  className="font-medium"
+                  className={`font-medium pt-2 pb-2 hover:bg-${Color.light}`}
                   onClick={() => handleUnfollowUser()}
                 >
                   Unfollow @{author.username}
