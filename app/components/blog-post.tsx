@@ -135,6 +135,7 @@ const BlogPost = ({
               ref={infoBoxRef}
               className={`absolute top-full right-0 w-48 pt-2 pb-2 text-center text-sm bg-white ${borderClassNames({ size: 'large' })}`}
             >
+              <div>TEST FEATURE HERE</div>
               <div className={`pb-2 text-xs border-b border-${Color.light}`}>
                 {formatDateTime(post.createdAt)}
               </div>
