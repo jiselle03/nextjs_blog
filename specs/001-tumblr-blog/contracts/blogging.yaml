@@ -1,0 +1,284 @@
+openapi: 3.1.0
+info:
+  title: Tumblr-Style Blogging API
+  version: 0.1.0
+  description: |
+    Server actions and REST endpoints powering the Tumblr-style dashboard.
+    Authentication is handled via iron-session cookies. All endpoints expect
+    requests from authenticated users unless noted otherwise.
+servers:
+  - url: https://{host}
+    variables:
+      host:
+        default: localhost:3000
+paths:
+  /api/dashboard/feed:
+    get:
+      summary: Fetch personalized feed
+      security:
+        - sessionCookie: []
+      parameters:
+        - in: query
+          name: cursor
+          schema:
+            type: string
+          description: Cursor for pagination (encoded publishedAt + postId).
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 20
+            maximum: 50
+      responses:
+        '200':
+          description: Feed entries merged from owned and followed blogs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Post'
+                  nextCursor:
+                    type: string
+                    nullable: true
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /api/posts:
+    post:
+      summary: Create a post on the current user's blog
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostInput'
+      responses:
+        '201':
+          description: Post created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          description: Validation error.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /api/posts/{postId}:
+    patch:
+      summary: Update an existing post owned by the user
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/PostId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUpdateInput'
+      responses:
+        '200':
+          description: Post updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '403':
+          description: Post belongs to another blog.
+        '404':
+          description: Post not found.
+    delete:
+      summary: Delete a post owned by the user
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/PostId'
+      responses:
+        '204':
+          description: Post deleted successfully.
+        '403':
+          description: Post belongs to another blog.
+        '404':
+          description: Post not found.
+  /api/blogs/{blogId}/follow:
+    post:
+      summary: Follow a blog
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/BlogId'
+      responses:
+        '204':
+          description: Follow relationship created (idempotent).
+        '404':
+          description: Blog not found or unavailable.
+    delete:
+      summary: Unfollow a blog
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/BlogId'
+      responses:
+        '204':
+          description: Follow relationship removed (idempotent).
+        '404':
+          description: Blog not found or unavailable.
+  /api/posts/{postId}/like:
+    post:
+      summary: Like a post
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/PostId'
+      responses:
+        '204':
+          description: Like stored (idempotent).
+        '404':
+          description: Post not found.
+    delete:
+      summary: Unlike a post
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/PostId'
+      responses:
+        '204':
+          description: Like removed (idempotent).
+        '404':
+          description: Post not found.
+  /api/tags/search:
+    get:
+      summary: Search posts by tags
+      security:
+        - sessionCookie: []
+      parameters:
+        - in: query
+          name: tags
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+          description: Comma-separated list of tag slugs (AND matching).
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 20
+            maximum: 50
+      responses:
+        '200':
+          description: Posts matching every requested tag.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Post'
+        '400':
+          description: Invalid tag inputs.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: iron-session
+  parameters:
+    PostId:
+      name: postId
+      in: path
+      required: true
+      schema:
+        type: string
+    BlogId:
+      name: blogId
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    UnauthorizedError:
+      description: Session missing or expired.
+  schemas:
+    Post:
+      type: object
+      properties:
+        id:
+          type: string
+        blogId:
+          type: string
+        blogHandle:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        excerpt:
+          type: string
+          nullable: true
+        body:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        likeCount:
+          type: integer
+        likedByViewer:
+          type: boolean
+        publishedAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        shareUrl:
+          type: string
+    PostInput:
+      type: object
+      required:
+        - title
+        - body
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+        body:
+          type: string
+          minLength: 1
+        tags:
+          type: array
+          items:
+            type: string
+            maxLength: 30
+          maxItems: 10
+    PostUpdateInput:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+        body:
+          type: string
+          minLength: 1
+        tags:
+          type: array
+          items:
+            type: string
+            maxLength: 30
+          maxItems: 10

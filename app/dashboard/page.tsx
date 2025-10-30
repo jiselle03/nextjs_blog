@@ -21,7 +21,7 @@ const Dashboard = () => {
     }
   }
 
-  const handleDeletePost = async (id: number): Promise<void> => {
+  const handleDeletePost = async (id: string): Promise<void> => {
     await deletePost(id, handleFetchPosts)
   }
 
@@ -43,7 +43,7 @@ const Dashboard = () => {
         {posts.map((post) => (
           <BlogPost
             key={post.id}
-            currentUserId={currentUser?.id as number}
+            currentUserId={currentUser?.id ?? ''}
             post={post}
             author={post.author}
             onDelete={handleDeletePost}

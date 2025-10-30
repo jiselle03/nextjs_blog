@@ -1,11 +1,11 @@
 import { cookies } from 'next/headers'
 import { getIronSession } from 'iron-session'
-import { SessionData, User } from '@/types'
+import { Blog, SessionData, User } from '@/types'
 
 const MAX_AGE_IN_MILLISECONDS = 86400 // 1 day
 
 const defaultSession: SessionData = {
-  id: 0,
+  id: '',
   email: '',
   username: '',
   isLoggedIn: false,
@@ -49,13 +49,17 @@ export const getSession = async (): Promise<SessionData> => {
   }
 }
 
-export const createSession = async (user: User): Promise<void> => {
+type SessionUser = Pick<User, 'id' | 'email' | 'username'> & {
+  blog?: Blog | null
+}
+
+export const createSession = async (user: SessionUser): Promise<void> => {
   try {
     const session = await getIronSession<SessionData>(cookies(), sessionOptions)
 
     session.id = user.id
     session.email = user.email
-    session.username = user.username
+    session.username = user.username || user.blog?.handle || ''
     session.isLoggedIn = true
 
     await session.save()

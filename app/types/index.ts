@@ -1,25 +1,38 @@
+export interface Blog {
+  id: string
+  handle: string
+  title: string
+  description?: string | null
+  accentTheme?: string | null
+}
+
 export interface User {
-  id: number
+  id: string
   email: string
   username: string
-  createdAt: Date
-  updatedAt: Date
+  displayName?: string | null
+  avatarUrl?: string | null
+  blog?: Blog | null
+  blogId?: string
 }
 
 export type UserPosts = User & { posts: Post[] }
 
 export interface Post {
-  id: number
+  id: string
   title: string
   content: string
   tags: string[]
   author: User
   createdAt: string
+  updatedAt: string
+  likeCount: number
+  excerpt?: string | null
   isFollowing?: boolean | null
 }
 
 export interface SessionData {
-  id: number
+  id: string
   email: string
   username: string
   isLoggedIn: boolean
@@ -37,4 +50,4 @@ export interface CreatePostForm {
   tags: string[]
 }
 
-export type EditPostForm = CreatePostForm & { id: number }
+export type EditPostForm = CreatePostForm & { id: string }

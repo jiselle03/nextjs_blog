@@ -23,7 +23,7 @@ const PostsWithTag = () => {
     }
   }, [params.tag])
 
-  const handleDeletePost = async (id: number): Promise<void> => {
+  const handleDeletePost = async (id: string): Promise<void> => {
     await deletePost(id, handleFetchPosts)
   }
 
@@ -47,7 +47,7 @@ const PostsWithTag = () => {
         {posts.map((post) => (
           <BlogPost
             key={post.id}
-            currentUserId={currentUser?.id as number}
+            currentUserId={currentUser?.id ?? ''}
             author={post.author}
             post={post}
             allowFollow={true}

@@ -25,11 +25,11 @@ import {
 import FollowButton from '@/components/follow-button'
 
 type BlogPostProps = {
-  currentUserId: number
+  currentUserId: string
   post: Post
   author: User
   allowFollow?: boolean
-  onDelete: (id: number) => Promise<void>
+  onDelete: (id: string) => Promise<void>
   onFollowingUpdate: (following: boolean | null) => void
 }
 
@@ -80,7 +80,10 @@ const BlogPost = ({
   }
 
   const handleUnfollowUser = async (): Promise<void> => {
-    await unfollowUser(author.id, () => onFollowingUpdate(false))
+    if (!author.blogId && !author.blog?.id) return
+    const blogId = author.blogId || author.blog?.id
+    if (!blogId) return
+    await unfollowUser(blogId, () => onFollowingUpdate(false))
   }
 
   const handleClickOutside = (event: MouseEvent): void => {
@@ -178,10 +181,7 @@ const BlogPost = ({
       </div>
       {isCurrentUser && (
         <div className="py-4 flex justify-end items-center gap-1.5 border-b border-gray-300">
-          <IoTrash
-            className={iconClassNames({})}
-            onClick={() => onDelete(post.id)}
-          />
+          <IoTrash className={iconClassNames({})} onClick={() => onDelete(post.id)} />
           <IoPencil className={iconClassNames({})} onClick={onEdit} />
         </div>
       )}

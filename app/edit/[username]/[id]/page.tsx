@@ -7,13 +7,13 @@ import { borderClassNames, buttonClassNames } from '@/styles/classNames'
 
 const Edit = () => {
   const router = useRouter()
-  const params = useParams()
+  const params = useParams<{ id: string }>()
 
   const [title, setTitle] = useState<string>('')
   const [content, setContent] = useState<string>('')
   const [tags, setTags] = useState<string>('')
 
-  const id = Number(params.id)
+  const id = params.id
 
   const handleFetchPost = useCallback(async (): Promise<void> => {
     const post = await fetchPost(id)
@@ -30,12 +30,17 @@ const Edit = () => {
   const handleSubmit = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault()
 
+    const normalizedTags = tags
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0)
+
     await updatePost(
       {
         id,
         title,
         content,
-        tags: tags.split(',').map((tag) => tag.trim()),
+        tags: normalizedTags.length ? normalizedTags : ['untagged'],
       },
       () => router.push('/dashboard'),
     )

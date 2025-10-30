@@ -8,41 +8,55 @@ export const POST = async (req: NextRequest) => {
   try {
     const session = await getSession()
 
-    if (!session) {
+    if (!session?.isLoggedIn || !session.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { followingId } = await req.json()
+    const { blogId } = await req.json()
 
-    const followerId = Number(session.id)
-
-    if (followerId === followingId) {
+    if (!blogId) {
       return NextResponse.json(
-        { error: 'You cannot follow yourself.' },
+        { error: 'Target blog is required.' },
+        { status: 400 },
+      )
+    }
+
+    const blog = await prisma.blog.findUnique({ where: { id: blogId } })
+
+    if (!blog) {
+      return NextResponse.json(
+        { error: 'Blog not found.' },
+        { status: 404 },
+      )
+    }
+
+    if (blog.ownerId === session.id) {
+      return NextResponse.json(
+        { error: 'You cannot follow your own blog.' },
         { status: 400 },
       )
     }
 
     const existingFollow = await prisma.follow.findUnique({
       where: {
-        followerId_followingId: {
-          followerId,
-          followingId,
+        followerId_blogId: {
+          followerId: session.id,
+          blogId,
         },
       },
     })
 
     if (existingFollow) {
       return NextResponse.json(
-        { error: 'You are already following this user.' },
+        { error: 'You are already following this blog.' },
         { status: 400 },
       )
     }
 
     await prisma.follow.create({
       data: {
-        followerId,
-        followingId,
+        followerId: session.id,
+        blogId,
       },
     })
 

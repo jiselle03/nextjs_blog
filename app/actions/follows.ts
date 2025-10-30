@@ -2,11 +2,11 @@
 
 // Check if user follows a specific user
 export const fetchIsFollowing = async (
-  followingId: number,
+  blogId: string,
 ): Promise<boolean | null> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/users/follows/${followingId}`,
+      `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/users/follows/${blogId}`,
       {
         method: 'GET',
       },
@@ -32,7 +32,7 @@ export const fetchIsFollowing = async (
 
 // Follow user
 export const followUser = async (
-  followingId: number,
+  blogId: string,
   cb: () => Promise<void>,
 ): Promise<void> => {
   try {
@@ -41,7 +41,7 @@ export const followUser = async (
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ followingId }),
+      body: JSON.stringify({ blogId }),
     })
 
     if (response.ok) {
@@ -58,11 +58,11 @@ export const followUser = async (
 
 // Unfollow user
 export const unfollowUser = async (
-  followingId: number,
+  blogId: string,
   cb: () => void,
 ): Promise<void> => {
   try {
-    const response = await fetch(`/api/users/follows/${followingId}`, {
+    const response = await fetch(`/api/users/follows/${blogId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
