@@ -31,12 +31,21 @@ const UserBlog = () => {
     const data = await fetchUserPosts(params.username)
 
     if (data) {
-      setAuthor({ id: data.id, username: data.username } as User)
+      setAuthor(
+        {
+          id: data.id,
+          email: data.email,
+          username: data.username,
+          blogId: data.blogId,
+          blog: data.blog,
+        } as User,
+      )
       setPosts(data.posts)
+      setIsFollowing(data.posts[0]?.isFollowing ?? null)
     }
   }, [params.username])
 
-  const handleDeletePost = async (id: number): Promise<void> => {
+  const handleDeletePost = async (id: string): Promise<void> => {
     await deletePost(id, handleFetchPosts)
   }
 
@@ -65,7 +74,7 @@ const UserBlog = () => {
         {posts.map((post) => (
           <BlogPost
             key={post.id}
-            currentUserId={currentUser?.id as number}
+            currentUserId={currentUser?.id ?? ''}
             author={author}
             post={post}
             onDelete={handleDeletePost}

@@ -28,7 +28,7 @@ export const fetchPosts = async (): Promise<Post[] | null> => {
 }
 
 // Fetch one post
-export const fetchPost = async (id: number): Promise<Post | null> => {
+export const fetchPost = async (id: string): Promise<Post | null> => {
   try {
     const response = await fetch(`/api/posts/${id}`, {
       method: 'GET',
@@ -68,7 +68,10 @@ export const fetchUserPosts = async (
 
       return {
         id: data.id,
+        email: data.email,
         username: data.username,
+        blogId: data.blogId,
+        blog: data.blog,
         posts: data.posts,
       } as UserPosts
     } else {
@@ -130,7 +133,7 @@ export const createPost = async (
       body: JSON.stringify({
         title,
         content,
-        tags,
+        tags: tags.length ? tags : ['untagged'],
       }),
     })
 
@@ -164,7 +167,7 @@ export const updatePost = async (
       body: JSON.stringify({
         title,
         content,
-        tags,
+        tags: tags.length ? tags : ['untagged'],
       }),
     })
 
@@ -186,7 +189,7 @@ export const updatePost = async (
 
 // Delete post
 export const deletePost = async (
-  id: number,
+  id: string,
   cb: () => Promise<void>,
 ): Promise<void> => {
   try {

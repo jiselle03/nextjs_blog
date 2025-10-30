@@ -1,4 +1,13 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This project is a Tumblr-inspired blogging platform built with [Next.js](https://nextjs.org/), Tailwind CSS, and Prisma. Each user maintains their own blog, can follow other blogs, and curates a personalized feed—while the UI keeps the existing visual theme of the codebase.
+
+## Product Overview
+
+- `Multi-blog ownership`: users create, edit, and delete posts on their personal blog.
+- `Social graph`: users follow other blogs and see combined content in a unified feed.
+- `Engagement`: posts can be liked and their direct links copied for easy sharing.
+- `Tag discovery`: a search panel on the right lets users filter by tags authors add to posts.
+- `Dashboard layout`: after login, the center column lists posts from the user and followed blogs in reverse chronological order; the left column hosts navigation (Home, Settings, New, Log Out, etc.); the right column focuses on tag search and discovery.
+- `New post flow`: the “New” action in the left menu opens the composer to publish additional content.
 
 ## Getting Started
 

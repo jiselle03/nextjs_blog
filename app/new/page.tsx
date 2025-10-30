@@ -15,11 +15,16 @@ const New = () => {
   const handleSubmit = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault()
 
+    const normalizedTags = tags
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0)
+
     await createPost(
       {
         title,
         content,
-        tags: tags.split(',').map((tag) => tag.trim()),
+        tags: normalizedTags.length ? normalizedTags : ['untagged'],
       },
       () => router.push('/dashboard'),
     )

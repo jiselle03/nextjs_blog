@@ -14,34 +14,90 @@ datasource db {
 }
 
 model User {
-  id              Int      @id @default(autoincrement())
-  email           String   @unique
-  username        String   @unique
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  posts           Post[]
+  id          String   @id @default(uuid())
+  email       String   @unique
+  displayName String?
+  avatarUrl   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  followers Follow[] @relation("followers")
-  following Follow[] @relation("following")
+  blog    Blog?
+  follows Follow[]
+  likes   Like[]
 }
 
 model Follow {
-  followerId  Int
-  followingId Int
+  followerId String
+  blogId     String
+  createdAt  DateTime @default(now())
 
-  follower    User  @relation("followers", fields: [followingId], references: [id], onDelete: Cascade)
-  following   User  @relation("following", fields: [followerId], references: [id], onDelete: Cascade)
+  follower User @relation(fields: [followerId], references: [id])
+  blog     Blog @relation(fields: [blogId], references: [id])
 
-  @@unique([followerId, followingId])
+  @@id([followerId, blogId])
 }
 
 model Post {
-  id              Int      @id @default(autoincrement())
-  title           String   @db.VarChar(60)
-  content         String
-  tags            String[]
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  authorId        Int
-  author          User     @relation(fields: [authorId], references: [id])
+  id          String   @id @default(cuid())
+  blogId      String
+  title       String
+  slug        String
+  body        String
+  excerpt     String?
+  publishedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  likeCount   Int      @default(0)
+  tagList     String[] @default([])
+
+  blog  Blog      @relation(fields: [blogId], references: [id])
+  tags  PostTag[]
+  likes Like[]
+
+  @@unique([blogId, slug])
+  @@index([publishedAt])
+  @@index([blogId])
+}
+
+model Blog {
+  id          String   @id @default(cuid())
+  ownerId     String   @unique
+  handle      String   @unique
+  title       String
+  description String?
+  accentTheme String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  owner     User     @relation(fields: [ownerId], references: [id])
+  posts     Post[]
+  followers Follow[]
+}
+
+model Tag {
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
+
+  posts PostTag[]
+}
+
+model PostTag {
+  postId String
+  tagId  String
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+}
+
+model Like {
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
+
+  @@id([userId, postId])
 }

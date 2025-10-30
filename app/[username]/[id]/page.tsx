@@ -26,23 +26,27 @@ const UserBlogPost = () => {
 
   const handleFetchPost = useCallback(async (): Promise<void> => {
     setIsLoading(true)
-    const postData = await fetchPost(Number(params.id))
+    const postData = await fetchPost(params.id)
 
     if (postData) {
       setPost(postData)
 
-      if (!!post.author?.id) {
-        const followingData = await fetchIsFollowing(post.author?.id)
+      const blogId =
+        postData.author?.blogId || postData.author?.blog?.id || null
 
+      if (blogId) {
+        const followingData = await fetchIsFollowing(blogId)
         setIsFollowing(followingData)
         setPost((post) => ({ ...post, isFollowing: followingData }))
+      } else {
+        setIsFollowing(postData.isFollowing ?? null)
       }
     }
 
     setIsLoading(false)
-  }, [params.id, post.author?.id])
+  }, [params.id])
 
-  const handleDeletePost = async (id: number): Promise<void> => {
+  const handleDeletePost = async (id: string): Promise<void> => {
     setIsLoading(true)
 
     await deletePost(id, handleFetchPost)
@@ -79,7 +83,7 @@ const UserBlogPost = () => {
 
           <BlogPost
             key={post.id}
-            currentUserId={currentUser?.id as number}
+            currentUserId={currentUser?.id ?? ''}
             author={post.author}
             post={post}
             onDelete={handleDeletePost}

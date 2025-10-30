@@ -13,13 +13,19 @@ export const POST = async (req: NextRequest) => {
 
     const user = await prisma.user.findUnique({
       where: { email },
+      include: { blog: true },
     })
 
-    if (!user) {
+    if (!user || !user.blog) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    await createSession(user)
+    await createSession({
+      id: user.id,
+      email: user.email,
+      username: user.blog.handle,
+      blog: user.blog,
+    })
 
     revalidatePath('/dashboard')
 

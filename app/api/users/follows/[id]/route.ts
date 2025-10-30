@@ -11,33 +11,34 @@ export const GET = async (
   try {
     const session = await getSession()
 
-    if (!session?.id) {
+    if (!session?.isLoggedIn || !session.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const followerId = Number(session.id)
-    const followingId = Number(params.id)
+    const blogId = params.id
 
-    if (isNaN(followerId) || isNaN(followingId)) {
-      return NextResponse.json({ error: 'Invalid IDs' }, { status: 400 })
+    const blog = await prisma.blog.findUnique({ where: { id: blogId } })
+
+    if (!blog) {
+      return NextResponse.json({ error: 'Blog not found' }, { status: 404 })
     }
 
-    if (followerId === followingId) {
-      return NextResponse.json(null, { status: 201 })
+    if (blog.ownerId === session.id) {
+      return NextResponse.json(null, { status: 200 })
     }
 
     const followRecord = await prisma.follow.findUnique({
       where: {
-        followerId_followingId: {
-          followerId,
-          followingId,
+        followerId_blogId: {
+          followerId: session.id,
+          blogId,
         },
       },
     })
 
     const isFollowing = !!followRecord
 
-    return NextResponse.json(isFollowing, { status: 201 })
+    return NextResponse.json(isFollowing, { status: 200 })
   } catch (error) {
     console.error('Error:', error)
 
@@ -55,14 +56,17 @@ export const DELETE = async (
   try {
     const session = await getSession()
 
-    const followingId = Number(params.id)
-    const followerId = session.id
+    if (!session?.isLoggedIn || !session.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const blogId = params.id
 
     const existingFollow = await prisma.follow.findUnique({
       where: {
-        followerId_followingId: {
-          followerId,
-          followingId,
+        followerId_blogId: {
+          followerId: session.id,
+          blogId,
         },
       },
     })
@@ -74,11 +78,11 @@ export const DELETE = async (
       )
     }
 
-    if (existingFollow.followerId !== followerId) {
+    if (existingFollow.followerId !== session.id) {
       return NextResponse.json(
         {
           error:
-            'Unauthorized: You do not have permission to unfollow this user.',
+            'Unauthorized: You do not have permission to unfollow this blog.',
         },
         { status: 403 },
       )
@@ -86,9 +90,9 @@ export const DELETE = async (
 
     await prisma.follow.delete({
       where: {
-        followerId_followingId: {
-          followerId,
-          followingId,
+        followerId_blogId: {
+          followerId: session.id,
+          blogId,
         },
       },
     })

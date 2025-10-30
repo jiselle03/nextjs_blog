@@ -19,22 +19,33 @@ const FollowButton = ({
 }: FollowButtonProps) => {
   const [isFollowing, setIsFollowing] = useState<boolean | null>(null)
 
+  const resolveBlogId = (): string | undefined =>
+    author.blogId || author.blog?.id
+
   const handleFollowUser = async (): Promise<void> => {
-    await followUser(author.id, handleFetchIsFollowing)
+    const blogId = resolveBlogId()
+    if (!blogId) return
+    await followUser(blogId, handleFetchIsFollowing)
   }
 
   const handleUnfollowUser = async (): Promise<void> => {
-    await unfollowUser(author.id, handleFetchIsFollowing)
+    const blogId = resolveBlogId()
+    if (!blogId) return
+    await unfollowUser(blogId, handleFetchIsFollowing)
   }
 
   const handleFetchIsFollowing = useCallback(async (): Promise<void> => {
-    if (author.id) {
-      const data = await fetchIsFollowing(author.id)
-
-      setIsFollowing(data)
-      onFollowingUpdate(data)
+    const blogId = resolveBlogId()
+    if (!blogId) {
+      setIsFollowing(false)
+      onFollowingUpdate(false)
+      return
     }
-  }, [author.id, onFollowingUpdate])
+
+    const data = await fetchIsFollowing(blogId)
+    setIsFollowing(data)
+    onFollowingUpdate(data)
+  }, [author.blog?.id, author.blogId, onFollowingUpdate])
 
   useEffect(() => {
     handleFetchIsFollowing()
